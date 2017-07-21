@@ -66,6 +66,8 @@ public class BatchConfiguration {
 	
 	@Bean
 	public JdbcCursorItemReader<DatasetVO> mysqlReader(){
+		int num=0;
+		System.out.println(++num);
 		String sql = "SELECT 	A.object_id ," + 
 				"			   	A.object_name, " + 
 				"			   	A.service_status, " + 
@@ -100,8 +102,8 @@ public class BatchConfiguration {
 		}
 	}
 	
-	public UserItemProcessor processor() {
-		return new UserItemProcessor();
+	public WriteToInfluxdbProcessor processor() {
+		return new WriteToInfluxdbProcessor();
 	}
 	
 	public DatasetProcessor datasetProcessor() {
@@ -110,6 +112,7 @@ public class BatchConfiguration {
 	
 	@Bean
 	public FlatFileItemWriter<DatasetVO> writer(){
+		
 		FlatFileItemWriter<DatasetVO> writer = new FlatFileItemWriter<>();
 		writer.setResource(new FileSystemResource("C:\\Users\\NAVER\\Desktop\\user.csv"));
 		
@@ -124,10 +127,10 @@ public class BatchConfiguration {
 	
 	@Bean
 	public Step step1() {
-		return stepBuilderFactory.get("step1").<DatasetVO,DatasetVO> chunk(10)
+		return stepBuilderFactory.get("step1").<DatasetVO,DatasetVO> chunk(100)
 				.reader(mysqlReader())
 				.processor(datasetProcessor())
-				.writer(writer())
+				//.writer(writer())
 				.build();
 	}
 	
