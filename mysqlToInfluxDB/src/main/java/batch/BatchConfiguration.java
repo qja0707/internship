@@ -93,7 +93,7 @@ public class BatchConfiguration {
 	}
 	@Bean
 	public Step mysqlToInfluxDB() {
-		return stepBuilderFactory.get("step1").<DatasetVO,DatasetVO> chunk(1000)
+		return stepBuilderFactory.get("step1").<DatasetVO,DatasetVO> chunk(100)
 				.reader(mysqlReader())
 				.writer(new InfluxdbItemWriter())
 				.build();
