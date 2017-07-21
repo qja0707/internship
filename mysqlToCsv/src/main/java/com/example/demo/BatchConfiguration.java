@@ -2,6 +2,7 @@ package com.example.demo;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
@@ -33,6 +34,7 @@ import vo.DatasetVO;
 @Configuration
 @EnableBatchProcessing
 public class BatchConfiguration {
+	
 
 	@Autowired
 	public JobBuilderFactory jobBuilderFactory;
@@ -66,8 +68,7 @@ public class BatchConfiguration {
 	
 	@Bean
 	public JdbcCursorItemReader<DatasetVO> mysqlReader(){
-		int num=0;
-		System.out.println(++num);
+		System.out.println("reading@@@@@@@@@@@@@@@@@@@@@@@@@@");
 		String sql = "SELECT 	A.object_id ," + 
 				"			   	A.object_name, " + 
 				"			   	A.service_status, " + 
@@ -113,6 +114,7 @@ public class BatchConfiguration {
 	@Bean
 	public FlatFileItemWriter<DatasetVO> writer(){
 		
+		System.out.println("writgin$$$$$$$$$$$$$$$$$$$$$$");
 		FlatFileItemWriter<DatasetVO> writer = new FlatFileItemWriter<>();
 		writer.setResource(new FileSystemResource("C:\\Users\\NAVER\\Desktop\\user.csv"));
 		
@@ -127,10 +129,16 @@ public class BatchConfiguration {
 	
 	@Bean
 	public Step step1() {
-		return stepBuilderFactory.get("step1").<DatasetVO,DatasetVO> chunk(100)
+		return stepBuilderFactory.get("step1").<DatasetVO,ArrayList<DatasetVO>> chunk(100)
 				.reader(mysqlReader())
 				.processor(datasetProcessor())
-				//.writer(writer())
+				.build();
+	}
+	
+	@Bean
+	public Step step2() {
+		return stepBuilderFactory.get("influxDBWriteStep")
+				.tasklet(new InfluxDBWriteTask())
 				.build();
 	}
 	
@@ -139,6 +147,7 @@ public class BatchConfiguration {
 		return jobBuilderFactory.get("exportUserJob")
 				.incrementer(new RunIdIncrementer())
 				.flow(step1())
+				.next(step2())
 				.end()
 				.build();
 	}
