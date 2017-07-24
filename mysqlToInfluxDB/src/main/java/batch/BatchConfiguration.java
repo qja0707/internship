@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import job.step.InfluxdbItemWriter;
 import vo.DatasetVO;
 
 
@@ -34,12 +35,13 @@ public class BatchConfiguration {
 	@Autowired
 	public DataSource dataSource;
 	
-	
+	//my pc ip : 
 	@Bean
 	public DataSource dataSource() {
 		final DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-		dataSource.setUrl("jdbc:mysql://10.64.65.102:3306/test01?useSSL=false");
+		//dataSource.setUrl("jdbc:mysql://10.64.65.102:3306/test01?useSSL=false");		//laptop
+		dataSource.setUrl("jdbc:mysql://10.110.248.58:13306/dbForBatch");		//alpha server
 		dataSource.setUsername("root");
 		dataSource.setPassword("!@#123");
 		
@@ -95,7 +97,7 @@ public class BatchConfiguration {
 	}
 	@Bean
 	public Step mysqlToInfluxDB() {
-		return stepBuilderFactory.get("step1").<DatasetVO,DatasetVO> chunk(100)
+		return stepBuilderFactory.get("step1").<DatasetVO,DatasetVO> chunk(1000)
 				.reader(mysqlReader())
 				.writer(new InfluxdbItemWriter())
 				.build();
@@ -103,8 +105,8 @@ public class BatchConfiguration {
 	
 	
 	@Bean
-	public Job exportUserJob() {
-		return jobBuilderFactory.get("exportUserJob")
+	public Job influxdbJob() {
+		return jobBuilderFactory.get("influxdbJob")
 				.incrementer(new RunIdIncrementer())
 				.flow(mysqlToInfluxDB())
 				.end()
