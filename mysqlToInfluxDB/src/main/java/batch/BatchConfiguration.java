@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import job.step.InfluxdbItemWriter;
-import job.step.mysqlCursorReader;
+import job.step.MysqlReader;
 import vo.DatasetVO;
 
 
@@ -52,7 +52,7 @@ public class BatchConfiguration {
 	@Bean
 	public Step mysqlToInfluxDB() {
 		return stepBuilderFactory.get("mysql->influxDB").<DatasetVO,DatasetVO> chunk(1000)
-				.reader(new mysqlCursorReader().read())
+				.reader(new MysqlReader())
 				.writer(new InfluxdbItemWriter())
 				.build();
 	}
