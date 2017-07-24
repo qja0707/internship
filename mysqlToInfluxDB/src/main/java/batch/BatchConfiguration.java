@@ -41,7 +41,7 @@ public class BatchConfiguration {
 		final DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
 		//dataSource.setUrl("jdbc:mysql://10.64.65.102:3306/test01?useSSL=false");		//laptop
-		dataSource.setUrl("jdbc:mysql://10.110.248.58:13306/dbForBatch");		//alpha server
+		dataSource.setUrl("jdbc:mysql://10.110.248.58:13306/dbForBatch?autoReconnection=true");		//intern server
 		dataSource.setUsername("root");
 		dataSource.setPassword("!@#123");
 		
