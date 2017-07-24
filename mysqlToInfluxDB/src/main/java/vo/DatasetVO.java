@@ -10,6 +10,7 @@ public class DatasetVO {
 	private String categoryName;
 	private long objectId;
 	private long categoryId;
+	
 	public String getCategoryType() {
 		return CategoryType;
 	}

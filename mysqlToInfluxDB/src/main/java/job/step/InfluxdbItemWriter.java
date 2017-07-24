@@ -8,13 +8,13 @@ import influxDB.InfluxDBConn;
 import vo.DatasetVO;
 
 public class InfluxdbItemWriter implements ItemWriter<DatasetVO> {
-	private final static String IP_ADDR = "10.110.248.58";
-	private final static String PORT = "8086";
-	private final static String USER = "root";
-	private final static String PASSWORD = "root";
+	private final String IP_ADDR = "10.110.248.58";
+	private final String PORT = "8086";
+	private final String USER = "root";
+	private final String PASSWORD = "root";
 	
-	private final static String DATABASE = "Statistics";		
-	private final static String MEASUREMENT = "test16"; 
+	private final String DATABASE = "Statistics";		
+	private final String MEASUREMENT = "test16"; 
 	
 	InfluxDBConn db = new InfluxDBConn(IP_ADDR,PORT,DATABASE,USER,PASSWORD);
 
