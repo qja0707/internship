@@ -34,13 +34,15 @@ public class BatchConfiguration {
 	@Autowired
 	public DataSource dataSource;
 	
+	
 	@Bean
 	public DataSource dataSource() {
 		final DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-		dataSource.setUrl("jdbc:mysql://localhost:13306/dbForBatch?useSSL=false");
+		dataSource.setUrl("jdbc:mysql://10.64.65.102:3306/test01?useSSL=false");
 		dataSource.setUsername("root");
 		dataSource.setPassword("!@#123");
+		
 		
 		return dataSource;
 	}
