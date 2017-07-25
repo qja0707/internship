@@ -1,7 +1,5 @@
 package batch;
 
-import java.sql.SQLException;
-
 import javax.sql.DataSource;
 
 import org.springframework.batch.core.Job;
