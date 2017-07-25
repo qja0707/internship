@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
@@ -43,6 +42,9 @@ public class MysqlReader implements ItemReader<DatasetVO>{
 	
 	public MysqlReader() {
 		num=0;
+		System.out.println("DB = "+"jdbc:mysql://"+URL+":"+PORT+"/"+DATABASE);
+		
+		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 
