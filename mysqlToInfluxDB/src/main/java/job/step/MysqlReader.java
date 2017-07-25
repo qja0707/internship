@@ -35,7 +35,7 @@ public class MysqlReader implements ItemReader<DatasetVO>{
 			"			AND A.service_status='Y'  " + 
 			"			AND A.startdate <= now() AND A.enddate >=now()";
 	
-	Connection conn;
+	Connection conn; 
 	Statement stmt;
 	ResultSet rs;
 	int num;
