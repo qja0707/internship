@@ -50,9 +50,7 @@ public class InfluxDBConn {
 		
 		this.influxDB.setLogLevel(LogLevel.NONE);
 		this.influxDB.createDatabase(dbName);
-        System.out.println("################################################################################## ");
 		System.out.println("#  Connected to InfluxDB Version: " + this.influxDB.version() + " #");
-		System.out.println("##################################################################################");
 	}		
 	
 	//JSON

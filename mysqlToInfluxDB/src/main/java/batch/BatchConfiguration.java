@@ -1,5 +1,7 @@
 package batch;
 
+import java.sql.SQLException;
+
 import javax.sql.DataSource;
 
 import org.springframework.batch.core.Job;
@@ -13,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import job.step.InfluxdbItemWriter;
+import job.step.InfluxdbWriter;
 import job.step.MysqlReader;
 import vo.DatasetVO;
 
@@ -53,7 +55,7 @@ public class BatchConfiguration {
 	public Step mysqlToInfluxDB() {
 		return stepBuilderFactory.get("mysql->influxDB").<DatasetVO,DatasetVO> chunk(1000)
 				.reader(new MysqlReader())
-				.writer(new InfluxdbItemWriter())
+				.writer(new InfluxdbWriter())
 				.build();
 	}
 	
