@@ -6,14 +6,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ExecutionContext;
+import org.springframework.batch.item.ItemStreamException;
+import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
 import vo.DatasetVO;
 
-public class MysqlReader implements ItemReader<DatasetVO>{
+public class MysqlReader implements ItemStreamReader<DatasetVO>{
 	private final String READ = "Read----------";
 	
 	private final String URL = "capp23.ext.nhncorp.com";
@@ -38,28 +40,8 @@ public class MysqlReader implements ItemReader<DatasetVO>{
 	Connection conn; 
 	Statement stmt;
 	ResultSet rs;
-	int num;
+	int num=0;
 	
-	public MysqlReader() {
-		num=0;
-		System.out.println("DB = "+"jdbc:mysql://"+URL+":"+PORT+"/"+DATABASE);
-		
-		
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-
-			conn = DriverManager.getConnection("jdbc:mysql://"+URL+":"+PORT+"/"+DATABASE,USER,PASSWORD);
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(sql);
-		} catch (SQLException e) {
-			System.out.println(READ+"error is occured while reading MySQL");
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			System.out.println(READ+"com.mysql.jdbc.Driver is not founded");
-			e.printStackTrace();
-		}
-		System.out.println(READ+"Connected to MySQL");
-	}
 	@Override
 	public DatasetVO read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
 		if(rs.next()) {
@@ -78,7 +60,31 @@ public class MysqlReader implements ItemReader<DatasetVO>{
 		
 		return null;
 	}
-	public void finalize() {
+	@Override
+	public void open(ExecutionContext executionContext) throws ItemStreamException {
+		System.out.println("DB = "+"jdbc:mysql://"+URL+":"+PORT+"/"+DATABASE);
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+
+			conn = DriverManager.getConnection("jdbc:mysql://"+URL+":"+PORT+"/"+DATABASE,USER,PASSWORD);
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+		} catch (SQLException e) {
+			System.out.println(READ+"error is occured while reading MySQL");
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			System.out.println(READ+"com.mysql.jdbc.Driver is not founded");
+			e.printStackTrace();
+		}
+		System.out.println(READ+"Connected to MySQL");
+	}
+	@Override
+	public void update(ExecutionContext executionContext) throws ItemStreamException {
+		// TODO Auto-generated method stub
+	}
+	@Override
+	public void close() throws ItemStreamException {
 		try {
 			if(rs!=null)
 				rs.close();

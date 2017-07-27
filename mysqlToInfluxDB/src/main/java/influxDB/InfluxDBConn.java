@@ -120,6 +120,24 @@ public class InfluxDBConn {
 		batchPoints.point(point);
 		this.influxDB.write(batchPoints);
 	}
+	public void customWrite(String measurementName, DatasetVO dataset,long unixTime) {
+		
+		BatchPoints batchPoints = BatchPoints.database(dbName).retentionPolicy("").build();
+		
+		Point point = Point
+				.measurement(measurementName)
+				.tag("objectId", String.valueOf(dataset.getObjectId()))
+				.tag("objectName",dataset.getObjectName())
+				.tag("person", dataset.getPerson())
+				.tag("categoryId",String.valueOf(dataset.getCategoryId()))
+				.tag("categoryName",dataset.getCategoryName())
+				.addField("pcServiceYn",dataset.getPcServiceYn())
+				.addField("mobileServiceYn",dataset.getMobileServiceYn())
+				.time(unixTime, TimeUnit.MILLISECONDS)	
+				.build();
+		batchPoints.point(point);
+		this.influxDB.write(batchPoints);
+	}
 	public void closeDB() {
 		this.influxDB.close();
 		System.out.println("Close InfluxDB");
