@@ -62,7 +62,7 @@ public class MysqlReader implements ItemReader<DatasetVO>{
 	}
 	@Override
 	public DatasetVO read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-		while(rs.next()) {
+		if(rs.next()) {
 			DatasetVO dataset = new DatasetVO();
 			dataset.setObjectId(rs.getInt("A.object_id"));
 			dataset.setObjectName(rs.getString("A.object_name"));
@@ -79,16 +79,16 @@ public class MysqlReader implements ItemReader<DatasetVO>{
 		return null;
 	}
 	public void finalize() {
-			try {
-				if(rs!=null)
-					rs.close();
-				if(stmt!=null)
-					stmt.close();
-				if(conn!=null)
-					conn.close();
-			} catch (SQLException e) {
-				System.out.println(READ+"Error is occured while closing MySQL");
-				e.printStackTrace();
-			}
+		try {
+			if(rs!=null)
+				rs.close();
+			if(stmt!=null)
+				stmt.close();
+			if(conn!=null)
+				conn.close();
+		} catch (SQLException e) {
+			System.out.println(READ+"Error is occured while closing MySQL");
+			e.printStackTrace();
+		}
 	}
 }
