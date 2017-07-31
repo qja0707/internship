@@ -21,9 +21,9 @@ import vo.DatasetVO;
 @Configuration
 @EnableBatchProcessing
 public class BatchConfiguration {
-	private final String IP_ADDR = "10.110.248.58";		//intern server
+	private final String IP_ADDR = "10.110.248.58";		//mysql of intern server
 	private final String PORT = "13306";
-	private final String DATABASE = "dbForBatch";
+	private final String DATABASE = "dbForBatch";		
 	
 	private final String USER = "root";
 	private final String PASSWORD = "!@#123";

@@ -18,7 +18,7 @@ public class InfluxdbWriter implements ItemStreamWriter<DatasetVO> {
 	private final String PASSWORD = "root";
 	
 	private final String DATABASE = "Statistics";		
-	private final String MEASUREMENT = "srObject"; 
+	private final String MEASUREMENT = "test16"; 
 	
 	private final long CUSTOM_DATE = System.currentTimeMillis();//-86400000*8;			//default : System.currentTimeMillis()
 	private final long TIME_DIFFERENCE = 9*60*60*1000;	//GMT+9:00 * 1hour * 1minute * 1000(ms)
