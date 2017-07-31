@@ -11,12 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.influxdb.InfluxDB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.timegraph.dataProcess.ProcessForGooglechart;
 
@@ -34,12 +32,12 @@ public class HomeController {
 	private final String USER = "root";
 	private final String PASSWORD = "root";
 
-	private final String DATABASE = "Statistics";
-	private final String MEASUREMENT = "test16";
+	public static final String DATABASE = "Statistics";
+	public static final String MEASUREMENT = "test16";
 
-	private final String pcOrMobile = "select count(pcServiceYn) from "+MEASUREMENT+" where time>'2017-07-23T00:00:00Z' and (pcServiceYn = 'Y' or mobileServiceYn = 'Y') group by time(1d)";
-	private final String mobileService = "select count(mobileServiceYn) from "+MEASUREMENT+" where time>'2017-07-23T00:00:00Z' and (mobileServiceYn = 'Y') group by time(1d)";
-	private final String pcService = "select count(pcServiceYn) from "+MEASUREMENT+" where time>'2017-07-23T00:00:00Z' and (pcServiceYn = 'Y') group by time(1d)";
+	private final String pcOrMobile = "select count(pcServiceYn) from "+MEASUREMENT+" where time<now() + 9h and (pcServiceYn = 'Y' or mobileServiceYn = 'Y') group by time(1d)";
+	private final String mobileService = "select count(mobileServiceYn) from "+MEASUREMENT+" where time<now() + 9h and (mobileServiceYn = 'Y') group by time(1d)";
+	private final String pcService = "select count(pcServiceYn) from "+MEASUREMENT+" where time<now() + 9h and (pcServiceYn = 'Y') group by time(1d)";
 	
 
 	
@@ -87,10 +85,6 @@ public class HomeController {
 		return "testpage";
 	}
 	
-	@RequestMapping(value = "/js_test",method = RequestMethod.GET)
-	public String jsTest() {
-		return "js_practice";
-	}
 	@RequestMapping(value = "/test2",method = RequestMethod.GET)
 	public String testpage2(Model model) {
 		
@@ -126,8 +120,9 @@ public class HomeController {
 		return "testpage2";
 	}
 	@RequestMapping(value = "/personData.do",method = RequestMethod.GET)
-	public String personData(HttpServletRequest request, @RequestParam(value="person") String person) {
-		String countByPerson = "select count(pcServiceYn) from "+MEASUREMENT+" where time>'2017-07-23T00:00:00Z' and (\"person\" = '"+person+"') group by time(1d)";
+	public String personData(HttpServletRequest request) {
+		String person = request.getParameter("person");
+		String countByPerson = "select count(pcServiceYn) from "+MEASUREMENT+" where time<now() + 9h and (\"person\" = '"+person+"') group by time(1d)";
 		
 		try {
 			InfluxDBConn influxDBConn = new InfluxDBConn(IP_ADDR, PORT, DATABASE, USER, PASSWORD);
@@ -147,7 +142,6 @@ public class HomeController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		
 		return "personData";
 	}

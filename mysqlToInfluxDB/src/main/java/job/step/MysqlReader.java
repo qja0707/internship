@@ -36,6 +36,7 @@ public class MysqlReader implements ItemStreamReader<DatasetVO>{
 			"		WHERE A.object_id = B.object_id  " + 
 			"			AND A.service_status='Y'  " + 
 			"			AND A.startdate <= now() AND A.enddate >=now()";
+			//"			AND A.startdate <= (now() - interval 8 day) AND A.enddate >=(now() - interval 8 day)";
 	
 	Connection conn; 
 	Statement stmt;

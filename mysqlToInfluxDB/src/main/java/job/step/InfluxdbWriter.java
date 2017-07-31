@@ -1,7 +1,6 @@
 package job.step;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.batch.item.ExecutionContext;
@@ -21,6 +20,7 @@ public class InfluxdbWriter implements ItemStreamWriter<DatasetVO> {
 	private final String DATABASE = "Statistics";		
 	private final String MEASUREMENT = "srObject"; 
 	
+	private final long CUSTOM_DATE = System.currentTimeMillis();//-86400000*8;			//default : System.currentTimeMillis()
 	private final long TIME_DIFFERENCE = 9*60*60*1000;	//GMT+9:00 * 1hour * 1minute * 1000(ms)
 	
 	InfluxDBConn db;
@@ -49,7 +49,7 @@ public class InfluxdbWriter implements ItemStreamWriter<DatasetVO> {
 
 	@Override
 	public void open(ExecutionContext executionContext) throws ItemStreamException {
-		presentTime = System.currentTimeMillis() + TIME_DIFFERENCE;
+		presentTime = CUSTOM_DATE + TIME_DIFFERENCE;
 		db = new InfluxDBConn(IP_ADDR,PORT,DATABASE,USER,PASSWORD);
 		try {
 			db.setUp();

@@ -6,9 +6,9 @@ import org.influxdb.InfluxDB;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 
-public class InfluxdbCountQuery {
+import com.timegraph.controller.HomeController;
 
-	final String dbName = "Statistics";
+public class InfluxdbCountQuery {
 	
 	private InfluxDB influxDB;
 
@@ -21,19 +21,10 @@ public class InfluxdbCountQuery {
 	}
 
 	public List<List<Object>> select(String sql) {
-		query = new Query(sql, dbName);
+		query = new Query(sql, HomeController.DATABASE);
 		result = influxDB.query(query);
 
 		lists = result.getResults().get(0).getSeries().get(0).getValues();
 		return lists;
-	}
-
-	public List<List<Object>> countByPerson(String sql) {
-		query = new Query(sql, dbName);
-		result = influxDB.query(query);
-		System.out.println(sql);
-		lists = result.getResults().get(0).getSeries().get(0).getValues();
-		System.out.println(lists);
-		return null;
 	}
 }

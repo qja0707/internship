@@ -12,92 +12,32 @@
 <script type="text/javascript">
 	function selectPerson(person, div){
 		console.log(person);
-		var datas;
 		$.ajax({
 			type : "GET",
 			url :"personData.do",
 			data : {"person":person},
-			//dataType : "json",
 			error : function(){alert('faild');},
 			success : function(response){
-				//var test = JSON.stringify(response);
 				console.log(typeof response);
 				console.log(response);
 				response = eval(response);
 				console.log(typeof response);
-				gc(person,response,div);
-				/* alert(response);
-				google.charts.load('current', {
-					packages : [ 'corechart', 'line' ]
-				});
-				google.charts.setOnLoadCallback(drawBasic(person,response,div));
-				
-				function drawBasic(person,response,div){
-					var data = new google.visualization.DataTable();
-					data.addColumn('string', 'X');
-					data.addColumn('number', person);
-					data.addRows(response);
-					
-					var options = {
-							
-						hAxis : {
-							title : 'Time'
-						},
-						vAxis : {
-							title : 'Number'
-						},
-						pointSize: 5,
-						width:500,
-						height:300
-					};
-					var chart = new google.visualization.LineChart(document
-						.getElementById(div));
-					chart.draw(data,options);
-				} */
+				googleChart(person,response,div);
 			}
 		});
-		
-		function gc(person,response,div){
-			console.log(response);
-			google.charts.load('current', {
-				packages : [ 'corechart', 'line' ]
-			});
-			google.charts.setOnLoadCallback(drawBasic(person,response,div));
-			
-			function drawBasic(person,response,div){
-				var data = new google.visualization.DataTable();
-				data.addColumn('string', 'X');
-				data.addColumn('number', person);
-				data.addRows(response);
-				
-				var options = {
-						
-					hAxis : {
-						title : 'Time'
-					},
-					vAxis : {
-						title : 'Number'
-					},
-					pointSize: 5,
-					width:500,
-					height:300
-				};
-				var chart = new google.visualization.LineChart(document
-					.getElementById(div));
-				chart.draw(data,options);
-			}
-		}
-		
-		/* google.charts.load('current', {
+	}
+	function googleChart(person,response,div){
+		console.log(response);
+		google.charts.load('current', {
 			packages : [ 'corechart', 'line' ]
 		});
-		google.charts.setOnLoadCallback(drawBasic(person,div));
+		google.charts.setOnLoadCallback(drawBasic(person,response,div));
 		
-		function drawBasic(person,div){
+		function drawBasic(person,response,div){
 			var data = new google.visualization.DataTable();
 			data.addColumn('string', 'X');
 			data.addColumn('number', person);
-			//data.addRows(datas);
+			data.addRows(response);
 			
 			var options = {
 					
@@ -105,7 +45,7 @@
 					title : 'Time'
 				},
 				vAxis : {
-					title : 'Number'
+					title : 'Number', format : '0'
 				},
 				pointSize: 5,
 				width:500,
@@ -114,10 +54,10 @@
 			var chart = new google.visualization.LineChart(document
 				.getElementById(div));
 			chart.draw(data,options);
-		} */
+		}
 	}
-	
 </script>
+
 
 <script type="text/javascript">
 	google.charts.load('current', {
@@ -150,7 +90,7 @@
 				title : 'Time'
 			},
 			vAxis : {
-				title : 'Number'
+				title : 'Number', format : '0'
 			},
 			pointSize: 5,
 			width:500,
@@ -170,6 +110,8 @@
 	} 
 	
 </script>
+ 
+ 
 </head>
 <body>
 	<%
