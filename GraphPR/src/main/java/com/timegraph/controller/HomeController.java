@@ -54,16 +54,9 @@ public class HomeController {
 	public String home(Locale locale, Model model) {
 		logger.info("Welcome home! The client locale is {}.", locale);
 
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-
-		String formattedDate = dateFormat.format(date);
-
-		model.addAttribute("serverTime", formattedDate);
-
 		try {
-			InfluxDBConn influxDBConn = new InfluxDBConn(IP_ADDR, PORT, DATABASE, USER, PASSWORD);
-			InfluxdbCountQuery influxQuery = new InfluxdbCountQuery(influxDBConn.setUp());
+			InfluxDB influxDBConn = new InfluxDBConn(IP_ADDR, PORT, DATABASE, USER, PASSWORD).setUp();
+			InfluxdbCountQuery influxQuery = new InfluxdbCountQuery(influxDBConn);
 
 			List<List<Object>> pcOrMobileDatas = influxQuery.select(pcOrMobile);
 			List<List<Object>> mobileDatas = influxQuery.select(mobileService);
@@ -78,6 +71,10 @@ public class HomeController {
 			model.addAttribute("mobileDatas", mobileDatas);
 			model.addAttribute("pcDatas",pcDatas);
 			
+			InfluxdbTagKeys tagKeyQuery = new InfluxdbTagKeys(influxDBConn);
+			List<List<Object>> persons = tagKeyQuery.tagKeys();
+			model.addAttribute("persons",persons);
+			
 			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -87,6 +84,7 @@ public class HomeController {
 			e.printStackTrace();
 		}
 		return "testpage2";
+		
 	}
 	
 	@RequestMapping(value = "/test2",method = RequestMethod.GET)
