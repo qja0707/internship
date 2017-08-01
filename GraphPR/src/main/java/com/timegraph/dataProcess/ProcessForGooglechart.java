@@ -8,7 +8,7 @@ public class ProcessForGooglechart {
 		for (List<Object> list : items) {
 			String newItem = String.valueOf(list.get(0));
 			newItem = newItem.substring(0, 10);
-			newItem = "\'"+newItem+"\'";
+			newItem = "\""+newItem+"\"";
 			list.set(0, newItem);
 		}
 		return items;

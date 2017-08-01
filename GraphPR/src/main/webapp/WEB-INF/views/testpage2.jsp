@@ -12,16 +12,19 @@
 <script type="text/javascript">
 	function selectPerson(person, div){
 		console.log(person);
+		var selected = new Object();
+		selected.person = person;
+		var jsonData = JSON.stringify(selected)
 		$.ajax({
-			type : "GET",
-			url :"/srObject/personData",
-			data : {"person":person},
-			error : function(){alert('faild');},
+			type : 'GET',
+			url :'/srObject/personData',
+			contentType : 'application/json;charset=UTF-8',
+			data : {'jsonData':jsonData},
+			dataType:'json',
+			error : function(response){alert(response);},
 			success : function(response){
 				console.log(typeof response);
 				console.log(response);
-				response = eval(response);
-				console.log(typeof response);
 				googleChart(person,response,div);
 			}
 		});
