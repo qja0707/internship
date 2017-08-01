@@ -23,8 +23,10 @@ public class InfluxdbCountQuery {
 	public List<List<Object>> select(String sql) {
 		query = new Query(sql, HomeController.DATABASE);
 		result = influxDB.query(query);
-
+		System.out.println(sql);
+		System.out.println(result);
 		lists = result.getResults().get(0).getSeries().get(0).getValues();
+		System.out.println("in influxdbcountquery:"+lists);
 		return lists;
 	}
 }

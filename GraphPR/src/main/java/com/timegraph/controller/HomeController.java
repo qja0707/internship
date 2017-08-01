@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.timegraph.dataProcess.MakingDate;
 import com.timegraph.dataProcess.ProcessForGooglechart;
 
 import influxDB.InfluxDBConn;
@@ -33,15 +34,16 @@ public class HomeController {
 	private final String PASSWORD = "root";
 
 	public static final String DATABASE = "Statistics";
-	public static final String MEASUREMENT = "srObject";
+	public static final String MEASUREMENT = "test16";
+	public static final String UPPER_DATE = MakingDate.dateToday();
 
-	private final String pcOrMobile = "select count(pcServiceYn) from "+MEASUREMENT+" where time<now() + 1000d and (pcServiceYn = 'Y' or mobileServiceYn = 'Y') group by time(1d) fill(none)";
-	private final String mobileService = "select count(mobileServiceYn) from "+MEASUREMENT+" where time<now() + 9h and (mobileServiceYn = 'Y') group by time(1d)";
-	private final String pcService = "select count(pcServiceYn) from "+MEASUREMENT+" where time<now() + 9h and (pcServiceYn = 'Y') group by time(1d)";
+	private final String pcOrMobile = "select count(pcServiceYn) from "+MEASUREMENT+" where time<'"+UPPER_DATE+"' and (pcServiceYn = 'Y' or mobileServiceYn = 'Y') group by time(1d) ";
+	private final String mobileService = "select count(mobileServiceYn) from "+MEASUREMENT+" where time<'"+UPPER_DATE+"' and (mobileServiceYn = 'Y') group by time(1d)";
+	private final String pcService = "select count(pcServiceYn) from "+MEASUREMENT+" where time<'"+UPPER_DATE+"' and (pcServiceYn = 'Y') group by time(1d)";
 	
 
-	String person;
-	String countByPerson = "select count(pcServiceYn) from "+MEASUREMENT+" where time<now() + 9h and (\"person\" = '"+person+"') group by time(1d)";
+	/*String person;
+	String countByPerson = "select count(pcServiceYn) from "+MEASUREMENT+" where time<now() + 9h and (\"person\" = '"+person+"') group by time(1d)";*/
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
@@ -123,15 +125,15 @@ public class HomeController {
 	}
 	@RequestMapping(value = "/personData.do",method = RequestMethod.GET)
 	public String personData(HttpServletRequest request) {
-		person = request.getParameter("person");
-		//String countByPerson = "select count(pcServiceYn) from "+MEASUREMENT+" where time<now() + 9h and (\"person\" = '"+person+"') group by time(1d)";
+		String person = request.getParameter("person");
+		String countByPerson = "select count(pcServiceYn) from "+MEASUREMENT+" where time<'"+UPPER_DATE+"' and (\"person\" = '"+person+"') group by time(1d)";
 		
 		try {
 			InfluxDBConn influxDBConn = new InfluxDBConn(IP_ADDR, PORT, DATABASE, USER, PASSWORD);
 			InfluxdbCountQuery influxQuery = new InfluxdbCountQuery(influxDBConn.setUp());
 
 			List<List<Object>> countByPersonData = influxQuery.select(countByPerson);
-			
+			System.out.println("1"+countByPersonData);
 			ProcessForGooglechart change = new ProcessForGooglechart();
 			countByPersonData = change.dateToString(countByPersonData);
 			System.out.println(countByPersonData);
