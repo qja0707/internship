@@ -86,7 +86,7 @@ public class HomeController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "testpage";
+		return "testpage2";
 	}
 	
 	@RequestMapping(value = "/test2",method = RequestMethod.GET)
