@@ -50,7 +50,7 @@ public class HomeController {
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/srObject", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
 		logger.info("Welcome home! The client locale is {}.", locale);
 
@@ -87,41 +87,7 @@ public class HomeController {
 		
 	}
 	
-	@RequestMapping(value = "/test2",method = RequestMethod.GET)
-	public String testpage2(Model model) {
-		
-		try {
-			InfluxDB influxDBConn = new InfluxDBConn(IP_ADDR, PORT, DATABASE, USER, PASSWORD).setUp();
-			InfluxdbCountQuery influxQuery = new InfluxdbCountQuery(influxDBConn);
-
-			List<List<Object>> pcOrMobileDatas = influxQuery.select(pcOrMobile);
-			List<List<Object>> mobileDatas = influxQuery.select(mobileService);
-			List<List<Object>> pcDatas = influxQuery.select(pcService);
-
-			ProcessForGooglechart change = new ProcessForGooglechart();
-			pcOrMobileDatas = change.dateToString(pcOrMobileDatas);
-			mobileDatas = change.dateToString(mobileDatas);
-			pcDatas = change.dateToString(pcDatas);
-
-			model.addAttribute("datas", pcOrMobileDatas);
-			model.addAttribute("mobileDatas", mobileDatas);
-			model.addAttribute("pcDatas",pcDatas);
-			
-			InfluxdbTagKeys tagKeyQuery = new InfluxdbTagKeys(influxDBConn);
-			List<List<Object>> persons = tagKeyQuery.tagKeys();
-			model.addAttribute("persons",persons);
-			
-			
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "testpage2";
-	}
-	@RequestMapping(value = "/personData.do",method = RequestMethod.GET)
+	@RequestMapping(value = "/srObject/personData",method = RequestMethod.GET)
 	public String personData(HttpServletRequest request) {
 		String person = request.getParameter("person");
 		String countByPerson = "select count(pcServiceYn) from "+MEASUREMENT+" where time<'"+UPPER_DATE+"' and (\"person\" = '"+person+"') group by time(1d)";
