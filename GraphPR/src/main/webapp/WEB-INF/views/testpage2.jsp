@@ -14,7 +14,7 @@
 		console.log(person);
 		$.ajax({
 			type : "GET",
-			url :"personData.do",
+			url :"/srObject/personData",
 			data : {"person":person},
 			error : function(){alert('faild');},
 			success : function(response){
