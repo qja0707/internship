@@ -46,5 +46,8 @@ public class InfluxDBConn {
 		System.out.println("#  Connected to InfluxDB Version: " + this.influxDB.version() + " #");
 		
 		return this.influxDB;
-	}		
+	}	
+	public void InfluxDBClose() {
+		influxDB = null;
+	}
 }

@@ -7,6 +7,7 @@ import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 
 import com.timegraph.controller.HomeController;
+import com.timegraph.dataProcess.MakingDate;
 
 public class InfluxdbCountQuery {
 	
@@ -15,12 +16,26 @@ public class InfluxdbCountQuery {
 	Query query;
 	QueryResult result;
 	List<List<Object>> lists;
+	String sql;
+	final String measurement = HomeController.MEASUREMENT;
+	final String timeCondition = "time<\'"+new MakingDate().dateToday()+"\'";
+	final String timeInterval = "group by time(1d)";
 
 	public InfluxdbCountQuery(InfluxDB influxDB) {
 		this.influxDB = influxDB;
 	}
 
-	public List<List<Object>> select(String sql) {
+	public void select(String field) {
+		sql = "select count("+field+") from "+measurement+" where "+timeCondition+" and ("+field+" = 'Y') "+timeInterval;
+	}
+	public void select(String field, String field2) {
+		sql = "select count("+field+") from "+measurement+" where "+timeCondition+" and ("+field+" = 'Y'or "+field2+" = 'Y') "+timeInterval;
+	}
+	public void selectPerson(String field,String person) {
+		sql = "select count("+field+") from "+measurement+" where "+timeCondition+" and (\"person\" = \'"+person+"\') "+timeInterval;
+	}
+	
+	public List<List<Object>> execute(){
 		query = new Query(sql, HomeController.DATABASE);
 		result = influxDB.query(query);
 		System.out.println(sql);

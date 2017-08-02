@@ -9,7 +9,6 @@ import org.influxdb.dto.QueryResult;
 import com.timegraph.controller.HomeController;
 
 public class InfluxdbTagKeys {
-	private final String SHOW_PERSON="show tag values with key in(person)";
 
 	private InfluxDB influxDB;
 
@@ -21,8 +20,10 @@ public class InfluxdbTagKeys {
 		this.influxDB=influxDB;
 	}
 	
-	public List<List<Object>> tagKeys() {
-		query = new Query(SHOW_PERSON, HomeController.DATABASE);
+	public List<List<Object>> tagKeys(String tag) {
+		String showTag="show tag values with key in("+tag+")";
+		
+		query = new Query(showTag, HomeController.DATABASE);
 		result = influxDB.query(query);
 		
 		lists = result.getResults().get(0).getSeries().get(0).getValues();

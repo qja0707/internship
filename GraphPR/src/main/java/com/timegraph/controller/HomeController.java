@@ -37,32 +37,33 @@ public class HomeController {
 
 	public static final String DATABASE = "Statistics";
 	public static final String MEASUREMENT = "test16";
-	//public static final String UPPER_DATE = new MakingDate().dateToday();
-
-	private String pcOrMobile = "select count(pcServiceYn) from "+MEASUREMENT+" where time<now() and (pcServiceYn = 'Y' or mobileServiceYn = 'Y') group by time(1d) fill(none)";
-	private String mobileService = "select count(mobileServiceYn) from "+MEASUREMENT+" where time<now() and (mobileServiceYn = 'Y') group by time(1d) fill(none)";
-	private String pcService = "select count(pcServiceYn) from "+MEASUREMENT+" where time<now() and (pcServiceYn = 'Y') group by time(1d) fill(none)";
 	
+	private final String pcServiceYn = "pcServiceYn";
+	private final String mobileServiceYn = "mobileServiceYn";
+	private final String person = "person";
+	private final String categoryName = "categoryName";
 
-	/*String person;
-	String countByPerson = "select count(pcServiceYn) from "+MEASUREMENT+" where time<now() + 9h and (\"person\" = '"+person+"') group by time(1d)";*/
-	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
-	/**
-	 * Simply selects the home view to render by returning its name.
-	 */
+	InfluxDB influxDBConn;
+	InfluxdbCountQuery influxQuery;
+	
 	@RequestMapping(value = "/srObject", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
 		logger.info("Welcome home! The client locale is {}.", locale);
 
 		try {
-			InfluxDB influxDBConn = new InfluxDBConn(IP_ADDR, PORT, DATABASE, USER, PASSWORD).setUp();
-			InfluxdbCountQuery influxQuery = new InfluxdbCountQuery(influxDBConn);
+			influxDBConn = new InfluxDBConn(IP_ADDR, PORT, DATABASE, USER, PASSWORD).setUp();
+			influxQuery = new InfluxdbCountQuery(influxDBConn);
 
-			List<List<Object>> pcOrMobileDatas = influxQuery.select(pcOrMobile);
-			List<List<Object>> mobileDatas = influxQuery.select(mobileService);
-			List<List<Object>> pcDatas = influxQuery.select(pcService);
+			influxQuery.select(pcServiceYn,mobileServiceYn);
+			List<List<Object>> pcOrMobileDatas = influxQuery.execute();
+			
+			influxQuery.select(pcServiceYn);
+			List<List<Object>> pcDatas = influxQuery.execute();
+					
+			influxQuery.select(mobileServiceYn);
+			List<List<Object>> mobileDatas = influxQuery.execute();
 
 			ProcessForGooglechart change = new ProcessForGooglechart();
 			pcOrMobileDatas = change.dateToString(pcOrMobileDatas);
@@ -74,8 +75,10 @@ public class HomeController {
 			model.addAttribute("pcDatas",pcDatas);
 			
 			InfluxdbTagKeys tagKeyQuery = new InfluxdbTagKeys(influxDBConn);
-			List<List<Object>> persons = tagKeyQuery.tagKeys();
+			List<List<Object>> persons = tagKeyQuery.tagKeys(person);
+			List<List<Object>> categories = tagKeyQuery.tagKeys(categoryName);
 			model.addAttribute("persons",persons);
+			model.addAttribute("categories",categories);
 			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -83,6 +86,9 @@ public class HomeController {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally{
+			influxQuery=null;
+			influxDBConn=null;
 		}
 		return "testpage2";
 		
@@ -96,13 +102,13 @@ public class HomeController {
 		JSONParser parser = new JSONParser();
 		JSONObject jsonData = (JSONObject) parser.parse(request.getParameter("jsonData"));
 		String person=(String) jsonData.get("person");
-		String countByPerson = "select count(pcServiceYn) from "+MEASUREMENT+" where time<now() and (\"person\" = '"+person+"') group by time(1d) fill(none)";
 		
 		try {
-			InfluxDBConn influxDBConn = new InfluxDBConn(IP_ADDR, PORT, DATABASE, USER, PASSWORD);
-			InfluxdbCountQuery influxQuery = new InfluxdbCountQuery(influxDBConn.setUp());
+			influxDBConn = new InfluxDBConn(IP_ADDR, PORT, DATABASE, USER, PASSWORD).setUp();
+			influxQuery = new InfluxdbCountQuery(influxDBConn);
 
-			List<List<Object>> countByPersonData = influxQuery.select(countByPerson);
+			influxQuery.selectPerson(pcServiceYn, person);
+			List<List<Object>> countByPersonData = influxQuery.execute();
 			ProcessForGooglechart change = new ProcessForGooglechart();
 			countByPersonData = change.dateToString(countByPersonData);
 			System.out.println(countByPersonData);
@@ -117,6 +123,9 @@ public class HomeController {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			influxQuery=null;
+			influxDBConn=null;
 		}
 		
 		return "personData";

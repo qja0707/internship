@@ -5,6 +5,7 @@
 
 <html>
 <head>
+
 <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
 <script type="text/javascript"
 	src="https://www.gstatic.com/charts/loader.js"></script>
@@ -21,7 +22,7 @@
 		packages : [ 'corechart', 'line' ]
 	});
 
-	function selectPerson(person, div){
+	function selectOption(person, div){
 		console.log(person);
 		var selected = new Object();
 		selected.person = person;
@@ -74,6 +75,7 @@
 
 	<%
 		List<List<Object>> persons = (List<List<Object>>) request.getAttribute("persons");
+		List<List<Object>> categories = (List<List<Object>>) request.getAttribute("categories");
 	%>
 	<table>
 		<tr>
@@ -89,9 +91,9 @@
 		</tr>
 		<tr>
 			<td>
-				<div id="empty0_div"></div> <select id="select0" class="select"
-				size="1" onchange="selectPerson(this.value,'empty0_div')"
-				style="float: left">
+				<div id="empty0_div"></div> 
+				<select id="person0" class="select"
+				size="1" onchange="selectOption(this.value,'empty0_div')">
 					<option>person</option>
 					<%
 						for (List<Object> list : persons) {
@@ -100,11 +102,48 @@
 					<%
 						}
 					%>
-			</select>
+				</select>
+				<select id="category0" size="1">
+					<option>category</option>
+					<%
+						for (List<Object> list : categories) {
+					%>
+					<option value=<%=list.get(1)%>><%=list.get(1)%></option>
+					<%
+						}
+					%>
+				</select>
 			</td>
-			<td><div id="empty1_div"></div> <select id="select1"
-				class="select" size="1"
-				onchange="selectPerson(this.value,'empty1_div')">
+			<td>
+			<div id="empty1_div"></div>
+				<select id="person1"
+					class="select" size="1"
+					onchange="selectOption(this.value,'empty1_div')">
+						<option>person</option>
+					<%
+						for (List<Object> list : persons) {
+					%>
+					<option value=<%=list.get(1)%>><%=list.get(1)%></option>
+					<%
+						}
+					%>
+				</select>
+				<select id="category1" size="1">
+					<option>category</option>
+					<%
+						for (List<Object> list : categories) {
+					%>
+					<option value=<%=list.get(1)%>><%=list.get(1)%></option>
+					<%
+						}
+					%>
+				</select>
+			</td>
+			<td>
+			<div id="empty2_div"></div>
+				<select id="person2"
+					class="select" size="1"
+					onchange="selectOption(this.value,'empty2_div')">
 					<option>person</option>
 					<%
 						for (List<Object> list : persons) {
@@ -113,19 +152,18 @@
 					<%
 						}
 					%>
-			</select></td>
-			<td><div id="empty2_div"></div> <select id="select2"
-				class="select" size="1"
-				onchange="selectPerson(this.value,'empty2_div')">
-					<option>person</option>
+				</select>
+				<select id="category0" size="1">
+					<option>category</option>
 					<%
-						for (List<Object> list : persons) {
+						for (List<Object> list : categories) {
 					%>
 					<option value=<%=list.get(1)%>><%=list.get(1)%></option>
 					<%
 						}
 					%>
-			</select></td>
+				</select>
+			</td>
 		</tr>
 	</table>
 
