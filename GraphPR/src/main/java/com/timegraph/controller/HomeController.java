@@ -18,7 +18,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.timegraph.dataProcess.MakingDate;
 import com.timegraph.dataProcess.ProcessForGooglechart;
 
 import influxDB.InfluxDBConn;
@@ -38,11 +37,11 @@ public class HomeController {
 
 	public static final String DATABASE = "Statistics";
 	public static final String MEASUREMENT = "test16";
-	public static final String UPPER_DATE = MakingDate.dateToday();
+	//public static final String UPPER_DATE = new MakingDate().dateToday();
 
-	private final String pcOrMobile = "select count(pcServiceYn) from "+MEASUREMENT+" where time<'"+UPPER_DATE+"' and (pcServiceYn = 'Y' or mobileServiceYn = 'Y') group by time(1d) ";
-	private final String mobileService = "select count(mobileServiceYn) from "+MEASUREMENT+" where time<'"+UPPER_DATE+"' and (mobileServiceYn = 'Y') group by time(1d)";
-	private final String pcService = "select count(pcServiceYn) from "+MEASUREMENT+" where time<'"+UPPER_DATE+"' and (pcServiceYn = 'Y') group by time(1d)";
+	private String pcOrMobile = "select count(pcServiceYn) from "+MEASUREMENT+" where time<now() and (pcServiceYn = 'Y' or mobileServiceYn = 'Y') group by time(1d) fill(none)";
+	private String mobileService = "select count(mobileServiceYn) from "+MEASUREMENT+" where time<now() and (mobileServiceYn = 'Y') group by time(1d) fill(none)";
+	private String pcService = "select count(pcServiceYn) from "+MEASUREMENT+" where time<now() and (pcServiceYn = 'Y') group by time(1d) fill(none)";
 	
 
 	/*String person;
@@ -97,7 +96,7 @@ public class HomeController {
 		JSONParser parser = new JSONParser();
 		JSONObject jsonData = (JSONObject) parser.parse(request.getParameter("jsonData"));
 		String person=(String) jsonData.get("person");
-		String countByPerson = "select count(pcServiceYn) from "+MEASUREMENT+" where time<'"+UPPER_DATE+"' and (\"person\" = '"+person+"') group by time(1d)";
+		String countByPerson = "select count(pcServiceYn) from "+MEASUREMENT+" where time<now() and (\"person\" = '"+person+"') group by time(1d) fill(none)";
 		
 		try {
 			InfluxDBConn influxDBConn = new InfluxDBConn(IP_ADDR, PORT, DATABASE, USER, PASSWORD);

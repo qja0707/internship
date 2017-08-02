@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class MakingDate {
 
-	public static String dateToday() {
+	public String dateToday() {
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		Date now = new Date();

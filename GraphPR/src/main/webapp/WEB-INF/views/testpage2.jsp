@@ -10,6 +10,17 @@
 	src="https://www.gstatic.com/charts/loader.js"></script>
 
 <script type="text/javascript">
+
+	window.onload=function(){
+		googleChart('PC or Mobile',${datas},'chart_div');
+		googleChart('PC',${pcDatas},'pcChart_div');
+		googleChart('Mobile',${mobileDatas},'mobileChart_div');
+	}
+
+	google.charts.load('current', {
+		packages : [ 'corechart', 'line' ]
+	});
+
 	function selectPerson(person, div){
 		console.log(person);
 		var selected = new Object();
@@ -30,10 +41,7 @@
 		});
 	}
 	function googleChart(person,response,div){
-		console.log(response);
-		google.charts.load('current', {
-			packages : [ 'corechart', 'line' ]
-		});
+		
 		google.charts.setOnLoadCallback(drawBasic(person,response,div));
 		
 		function drawBasic(person,response,div){
@@ -59,64 +67,11 @@
 			chart.draw(data,options);
 		}
 	}
-</script>
-
-
-<script type="text/javascript">
-	google.charts.load('current', {
-		packages : [ 'corechart', 'line' ]
-	});
-	google.charts.setOnLoadCallback(drawBasic);
-	
-	 function drawBasic() {
-
-		var data = new google.visualization.DataTable();
-		data.addColumn('string', 'X');
-		data.addColumn('number', 'PC or Mobile');
-		data.addRows(${datas});
-		
-		console.log(typeof ${datas})
-		
-		var mobileData = new google.visualization.DataTable();
-		mobileData.addColumn('string', 'X');
-		mobileData.addColumn('number', 'Mobile');
-		mobileData.addRows(${mobileDatas});
-		
-		var pcData = new google.visualization.DataTable();
-		pcData.addColumn('string', 'X');
-		pcData.addColumn('number', 'PC');
-		pcData.addRows(${pcDatas});
-			
-		var options = {
-				
-			hAxis : {
-				title : 'Time'
-			},
-			vAxis : {
-				title : 'Number', format : '0'
-			},
-			pointSize: 5,
-			width:500,
-			height:300
-		};
-
-		var chart = new google.visualization.LineChart(document
-				.getElementById('chart_div'));
-		var mobileChart = new google.visualization.LineChart(document
-				.getElementById('mobileChart_div'));
-		var pcChart = new google.visualization.LineChart(document
-				.getElementById('pcChart_div'));
-
-		chart.draw(data, options);
-		mobileChart.draw(mobileData,options);
-		pcChart.draw(pcData,options);
-	} 
 	
 </script>
- 
- 
 </head>
 <body>
+
 	<%
 		List<List<Object>> persons = (List<List<Object>>) request.getAttribute("persons");
 	%>
@@ -173,7 +128,7 @@
 			</select></td>
 		</tr>
 	</table>
-	
+
 	${datas}
 </body>
 </html>
