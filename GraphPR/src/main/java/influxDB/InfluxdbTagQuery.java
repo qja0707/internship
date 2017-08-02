@@ -8,7 +8,7 @@ import org.influxdb.dto.QueryResult;
 
 import com.timegraph.controller.HomeController;
 
-public class InfluxdbTagKeys {
+public class InfluxdbTagQuery {
 
 	private InfluxDB influxDB;
 
@@ -16,7 +16,7 @@ public class InfluxdbTagKeys {
 	QueryResult result;
 	List<List<Object>> lists;
 	
-	public InfluxdbTagKeys(InfluxDB influxDB) {
+	public InfluxdbTagQuery(InfluxDB influxDB) {
 		this.influxDB=influxDB;
 	}
 	

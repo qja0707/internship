@@ -22,7 +22,7 @@ import com.timegraph.dataProcess.ProcessForGooglechart;
 
 import influxDB.InfluxDBConn;
 import influxDB.InfluxdbCountQuery;
-import influxDB.InfluxdbTagKeys;
+import influxDB.InfluxdbTagQuery;
 
 
 /**
@@ -74,7 +74,7 @@ public class HomeController {
 			model.addAttribute("mobileDatas", mobileDatas);
 			model.addAttribute("pcDatas",pcDatas);
 			
-			InfluxdbTagKeys tagKeyQuery = new InfluxdbTagKeys(influxDBConn);
+			InfluxdbTagQuery tagKeyQuery = new InfluxdbTagQuery(influxDBConn);
 			List<List<Object>> persons = tagKeyQuery.tagKeys(person);
 			List<List<Object>> categories = tagKeyQuery.tagKeys(categoryName);
 			model.addAttribute("persons",persons);
