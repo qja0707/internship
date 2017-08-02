@@ -22,10 +22,12 @@
 		packages : [ 'corechart', 'line' ]
 	});
 
-	function selectOption(person, div){
+	function selectOption(person,category,div){
 		console.log(person);
+		console.log(category);
 		var selected = new Object();
 		selected.person = person;
+		selected.category = category;
 		var jsonData = JSON.stringify(selected)
 		$.ajax({
 			type : 'GET',
@@ -33,7 +35,7 @@
 			contentType : 'application/json;charset=UTF-8',
 			data : {'jsonData':jsonData},
 			dataType:'json',
-			error : function(response){alert(response);},
+			error : function(response){alert("No Data");},
 			success : function(response){
 				console.log(typeof response);
 				console.log(response);
@@ -93,8 +95,8 @@
 			<td>
 				<div id="empty0_div"></div> 
 				<select id="person0" class="select"
-				size="1" onchange="selectOption(this.value,'empty0_div')">
-					<option>person</option>
+				size="1" onchange="selectOption(person0.value,category0.value,'empty0_div')">
+					<option value=null>person</option>
 					<%
 						for (List<Object> list : persons) {
 					%>
@@ -103,8 +105,8 @@
 						}
 					%>
 				</select>
-				<select id="category0" size="1">
-					<option>category</option>
+				<select id="category0" size="1" onchange="selectOption(person0.value,category0.value,'empty0_div')">
+					<option value=null>category</option>
 					<%
 						for (List<Object> list : categories) {
 					%>
@@ -118,7 +120,7 @@
 			<div id="empty1_div"></div>
 				<select id="person1"
 					class="select" size="1"
-					onchange="selectOption(this.value,'empty1_div')">
+					onchange="selectOption(person1.value,category1.value,'empty1_div')">
 						<option>person</option>
 					<%
 						for (List<Object> list : persons) {
@@ -128,7 +130,7 @@
 						}
 					%>
 				</select>
-				<select id="category1" size="1">
+				<select id="category1" size="1" onchange="selectOption(person1.value,category1.value,'empty1_div')">
 					<option>category</option>
 					<%
 						for (List<Object> list : categories) {
@@ -143,8 +145,8 @@
 			<div id="empty2_div"></div>
 				<select id="person2"
 					class="select" size="1"
-					onchange="selectOption(this.value,'empty2_div')">
-					<option>person</option>
+					onchange="selectOption(person2.value,category2.value,'empty2_div')">
+					<option value=null>person</option>
 					<%
 						for (List<Object> list : persons) {
 					%>
@@ -153,7 +155,7 @@
 						}
 					%>
 				</select>
-				<select id="category0" size="1">
+				<select id="category2" size="1" onchange="selectOption(person2.value,category2.value,'empty2_div')">
 					<option>category</option>
 					<%
 						for (List<Object> list : categories) {

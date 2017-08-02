@@ -26,6 +26,8 @@ public class InfluxdbTagQuery {
 		query = new Query(showTag, HomeController.DATABASE);
 		result = influxDB.query(query);
 		
+		System.out.println("@@@@@@@@@@@@@");
+		System.out.println(result);
 		lists = result.getResults().get(0).getSeries().get(0).getValues();
 		
 		return lists;

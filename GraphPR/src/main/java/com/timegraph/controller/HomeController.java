@@ -42,6 +42,8 @@ public class HomeController {
 	private final String mobileServiceYn = "mobileServiceYn";
 	private final String person = "person";
 	private final String categoryName = "categoryName";
+	
+	private final String stringNull = "null";
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
@@ -101,21 +103,28 @@ public class HomeController {
 		
 		JSONParser parser = new JSONParser();
 		JSONObject jsonData = (JSONObject) parser.parse(request.getParameter("jsonData"));
-		String person=(String) jsonData.get("person");
+		String selectedPerson=(String) jsonData.get("person");
+		String selectedCategory = (String) jsonData.get("category");
 		
 		try {
 			influxDBConn = new InfluxDBConn(IP_ADDR, PORT, DATABASE, USER, PASSWORD).setUp();
 			influxQuery = new InfluxdbCountQuery(influxDBConn);
 
-			influxQuery.selectPerson(pcServiceYn, person);
-			List<List<Object>> countByPersonData = influxQuery.execute();
+			if(!selectedPerson.equals(stringNull) && !selectedCategory.equals(stringNull)) {
+				influxQuery.selectPersonWithCategory(pcServiceYn, selectedPerson, selectedCategory);
+			}else if(!selectedPerson.equals(stringNull)) {
+				influxQuery.selectPerson(pcServiceYn, selectedPerson);
+			}else if(!selectedCategory.equals(stringNull)) {
+				influxQuery.selectCategory(pcServiceYn, selectedCategory);
+			}
+			List<List<Object>> countedData = influxQuery.execute();
 			ProcessForGooglechart change = new ProcessForGooglechart();
-			countByPersonData = change.dateToString(countByPersonData);
-			System.out.println(countByPersonData);
+			countedData = change.dateToString(countedData);
+			System.out.println(countedData);
 			
-			JSONArray jsonObj = (JSONArray) parser.parse(String.valueOf(countByPersonData));
+			JSONArray jsonObj = (JSONArray) parser.parse(String.valueOf(countedData));
 			System.out.println(jsonObj);
-			request.setAttribute("countByPersonData",jsonObj);
+			request.setAttribute("countedData",jsonObj);
 			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block

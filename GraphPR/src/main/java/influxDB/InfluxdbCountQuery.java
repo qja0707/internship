@@ -26,13 +26,19 @@ public class InfluxdbCountQuery {
 	}
 
 	public void select(String field) {
-		sql = "select count("+field+") from "+measurement+" where "+timeCondition+" and ("+field+" = 'Y') "+timeInterval;
+		sql = "select count("+field+") from "+measurement+" where "+timeCondition+" and "+field+" = 'Y' "+timeInterval;
 	}
 	public void select(String field, String field2) {
 		sql = "select count("+field+") from "+measurement+" where "+timeCondition+" and ("+field+" = 'Y'or "+field2+" = 'Y') "+timeInterval;
 	}
 	public void selectPerson(String field,String person) {
-		sql = "select count("+field+") from "+measurement+" where "+timeCondition+" and (\"person\" = \'"+person+"\') "+timeInterval;
+		sql = "select count("+field+") from "+measurement+" where "+timeCondition+" and person = \'"+person+"\' "+timeInterval;
+	}
+	public void selectCategory(String field,String category) {
+		sql = "select count("+field+") from "+measurement+" where "+timeCondition+" and categoryName = \'"+category+"\' "+timeInterval;
+	}
+	public void selectPersonWithCategory(String field,String person, String category) {
+		sql = "select count("+field+") from "+measurement+" where "+timeCondition+" and person = \'"+person+"\' and categoryName = \'"+category+"\' "+timeInterval;
 	}
 	
 	public List<List<Object>> execute(){
