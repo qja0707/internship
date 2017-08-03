@@ -19,7 +19,7 @@
 	}
 
 	google.charts.load('current', {
-		packages : [ 'corechart', 'line' ]
+		packages : [ 'corechart' ]
 	});
 
 	function selectOption(person,category,div){
@@ -49,7 +49,7 @@
 		
 		function drawBasic(person,response,div){
 			var data = new google.visualization.DataTable();
-			data.addColumn('string', 'X');
+			data.addColumn('string', 'Time');
 			data.addColumn('number', person);
 			data.addRows(response);
 			
@@ -62,10 +62,10 @@
 					title : 'Number', format : '0'
 				},
 				pointSize: 5,
-				width:500,
-				height:300
+				width:'100%',
+				height:'100%'
 			};
-			var chart = new google.visualization.LineChart(document
+			var chart = new google.visualization.ColumnChart(document
 				.getElementById(div));
 			chart.draw(data,options);
 		}
@@ -79,7 +79,30 @@
 		List<List<Object>> persons = (List<List<Object>>) request.getAttribute("persons");
 		List<List<Object>> categories = (List<List<Object>>) request.getAttribute("categories");
 	%>
-	<style>
+	
+	<div id = "chart_div"></div>
+	<select id="person0" class="select"
+		size="1" onchange="selectOption(person0.value,category0.value,'chart_div')">
+		<option value=null>person</option>
+		<%
+			for (List<Object> list : persons) {
+		%>
+		<option value=<%=list.get(1)%>><%=list.get(1)%></option>
+		<%
+			}
+		%>
+	</select>
+	<select id="category0" size="1" onchange="selectOption(person0.value,category0.value,'chart_div')">
+		<option value=null>category</option>
+		<%
+			for (List<Object> list : categories) {
+		%>
+		<option value=<%=list.get(1)%>><%=list.get(1)%></option>
+		<%
+			}
+		%>
+	</select>
+	<%-- <style>
 	.table{border-collapse:collapse;}
 	.table th, .table td{border:1px solid black;}
 	</style>
@@ -171,8 +194,8 @@
 				</select>
 			</td>
 		</tr>
-	</table>
+	</table> --%>
 
-	${datas}
+	<%-- ${datas} --%>
 </body>
 </html>

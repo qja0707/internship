@@ -45,8 +45,9 @@ public class MysqlReader implements ItemStreamReader<DatasetVO>{
 	
 	@Override
 	public DatasetVO read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+		DatasetVO dataset=null;
 		if(rs.next()) {
-			DatasetVO dataset = new DatasetVO();
+			dataset = new DatasetVO();
 			dataset.setObjectId(rs.getInt("A.object_id"));
 			dataset.setObjectName(rs.getString("A.object_name"));
 			dataset.setPcServiceYn(rs.getString("A.service_status"));
@@ -55,11 +56,11 @@ public class MysqlReader implements ItemStreamReader<DatasetVO>{
 			dataset.setCategoryId(rs.getLong("B.category_id"));
 			dataset.setCategoryName(rs.getString("category_name"));
 			num++;
-			return dataset;
+			//return dataset;
 		}
 		System.out.println(READ+num+" is read");
 		
-		return null;
+		return dataset;
 	}
 	@Override
 	public void open(ExecutionContext executionContext) throws ItemStreamException {
