@@ -17,6 +17,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.timegraph.dao.InfluxdbDAO;
+import com.timegraph.dto.InfluxdbDTO;
 
 /**
  * Handles requests for the application home page.
@@ -39,17 +40,29 @@ public class HomeController {
 	public String home(Locale locale, Model model) {
 		logger.info("Welcome home! The client locale is {}.", locale);
 
-		List<List<Object>> pcOrMobileDatas = influxdbDAO.readDatas(pcServiceYn,mobileServiceYn);
-		List<List<Object>> mobileDatas = influxdbDAO.readDatas(mobileServiceYn);
-		List<List<Object>> pcDatas = influxdbDAO.readDatas(pcServiceYn);
-		model.addAttribute("datas", pcOrMobileDatas);
-		model.addAttribute("mobileDatas", mobileDatas);
-		model.addAttribute("pcDatas",pcDatas);
+		InfluxdbDTO pcOrMobileDatas = new InfluxdbDTO();
+		InfluxdbDTO mobileDatas = new InfluxdbDTO();
+		InfluxdbDTO pcDatas = new InfluxdbDTO();
 		
-		List<List<Object>> persons = influxdbDAO.getTagValues(person);
-		List<List<Object>> categories = influxdbDAO.getTagValues(categoryName);
-		model.addAttribute("persons",persons);
-		model.addAttribute("categories",categories);
+		pcOrMobileDatas.setField(pcServiceYn);
+		pcOrMobileDatas.setField2(mobileServiceYn);
+		mobileDatas.setField(mobileServiceYn);
+		pcDatas.setField(pcServiceYn);
+		pcOrMobileDatas.setDatas((influxdbDAO.readDatas(pcOrMobileDatas)).getDatas());
+		mobileDatas=influxdbDAO.readDatas(mobileDatas);
+		pcDatas=influxdbDAO.readDatas(pcDatas);
+		
+		model.addAttribute("datas", pcOrMobileDatas.getDatas());
+		model.addAttribute("mobileDatas", mobileDatas.getDatas());
+		model.addAttribute("pcDatas",pcDatas.getDatas());
+		
+		InfluxdbDTO persons = new InfluxdbDTO();
+		InfluxdbDTO categories = new InfluxdbDTO();
+
+		persons.setDatas(influxdbDAO.getTagValues(person));
+		categories.setDatas(influxdbDAO.getTagValues(categoryName));
+		model.addAttribute("persons",persons.getDatas());
+		model.addAttribute("categories",categories.getDatas());
 		
 		return "testpage2";
 		
@@ -62,21 +75,23 @@ public class HomeController {
 		
 		JSONParser parser = new JSONParser();
 		JSONObject jsonData = (JSONObject) parser.parse(request.getParameter("jsonData"));
-		String selectedPerson=(String) jsonData.get("person");
-		String selectedCategory = (String) jsonData.get("category");
+
+		InfluxdbDTO dto = new InfluxdbDTO();
 		
-		List<List<Object>> countedData;
+		dto.setField(pcServiceYn);
+		dto.setPerson((String) jsonData.get("person"));
+		dto.setCategoryName((String) jsonData.get("category"));
 		
-		if(!selectedPerson.equals(stringNull) && !selectedCategory.equals(stringNull)) {
-			countedData = influxdbDAO.readDatasPerPersonAndCategory(pcServiceYn, selectedPerson, selectedCategory);
-		}else if(!selectedPerson.equals(stringNull)) {
-			countedData = influxdbDAO.readDatasPerPerson(pcServiceYn, selectedPerson);
-		}else if(!selectedCategory.equals(stringNull)) {
-			countedData = influxdbDAO.readDatasPerCategory(pcServiceYn, selectedCategory);
+		if(!dto.getPerson().equals(stringNull) && !dto.getCategoryName().equals(stringNull)) {
+			dto = influxdbDAO.readDatasPerPersonAndCategory(dto);
+		}else if(!dto.getPerson().equals(stringNull)) {
+			dto = influxdbDAO.readDatasPerPerson(dto);
+		}else if(!dto.getCategoryName().equals(stringNull)) {
+			dto = influxdbDAO.readDatasPerCategory(dto);
 		}else {
-			countedData=null;
+			dto=null;
 		}
-		JSONArray jsonObj = (JSONArray) parser.parse(String.valueOf(countedData));
+		JSONArray jsonObj = (JSONArray) parser.parse(String.valueOf(dto.getDatas()));
 		System.out.println(jsonObj);
 		request.setAttribute("countedData",jsonObj);
 		

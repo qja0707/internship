@@ -5,10 +5,11 @@ import java.util.List;
 
 import org.influxdb.InfluxDB;
 
+import com.timegraph.bo.InfluxdbQueryGenerator;
 import com.timegraph.dataProcess.ProcessForGooglechart;
+import com.timegraph.dto.InfluxdbDTO;
 
 import influxDB.InfluxDBConn;
-import influxDB.InfluxdbQueryGenerator;
 
 public class InfluxdbDAO {
 
@@ -38,25 +39,32 @@ public class InfluxdbDAO {
 			e.printStackTrace();
 		}
 	}
-	public List<List<Object>> readDatas(String field){
-		queryGenerator.select(field);
-		return transform.dateToString(queryGenerator.execute());
+	public InfluxdbDTO readDatas(InfluxdbDTO dto){
+		if(dto.getField2()!=null)
+			queryGenerator.select(dto.getField(), dto.getField2());
+		else
+			queryGenerator.select(dto.getField());
+		dto.setDatas(transform.dateToString(queryGenerator.execute()));
+		return dto;
 	}
-	public List<List<Object>> readDatas(String field, String field2){
-		queryGenerator.select(field, field2);
+	/*public List<List<Object>> readDatas(InfluxdbVO dto){
+		queryGenerator.select(dto.getField(), dto.getField2());
 		return transform.dateToString(queryGenerator.execute());
+	}*/
+	public InfluxdbDTO readDatasPerPerson(InfluxdbDTO dto){
+		queryGenerator.selectPerson(dto.getField(), dto.getPerson());
+		dto.setDatas(transform.dateToString(queryGenerator.execute()));
+		return dto;
 	}
-	public List<List<Object>> readDatasPerPerson(String field, String person){
-		queryGenerator.selectPerson(field, person);
-		return transform.dateToString(queryGenerator.execute());
+	public InfluxdbDTO readDatasPerCategory(InfluxdbDTO dto){
+		queryGenerator.selectCategory(dto.getField(), dto.getCategoryName());
+		dto.setDatas(transform.dateToString(queryGenerator.execute()));
+		return dto;
 	}
-	public List<List<Object>> readDatasPerCategory(String field, String category){
-		queryGenerator.selectCategory(field, category);
-		return transform.dateToString(queryGenerator.execute());
-	}
-	public List<List<Object>> readDatasPerPersonAndCategory(String field, String person, String category){
-		queryGenerator.selectPersonWithCategory(field, person, category);
-		return transform.dateToString(queryGenerator.execute());
+	public InfluxdbDTO readDatasPerPersonAndCategory(InfluxdbDTO dto){
+		queryGenerator.selectPersonWithCategory(dto.getField(), dto.getPerson(), dto.getCategoryName());
+		dto.setDatas(transform.dateToString(queryGenerator.execute()));
+		return dto;
 	}
 	public List<List<Object>> getTagValues(String key){
 		queryGenerator.tagValues(key);
