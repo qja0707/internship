@@ -79,7 +79,11 @@
 		List<List<Object>> persons = (List<List<Object>>) request.getAttribute("persons");
 		List<List<Object>> categories = (List<List<Object>>) request.getAttribute("categories");
 	%>
-	<table>
+	<style>
+	.table{border-collapse:collapse;}
+	.table th, .table td{border:1px solid black;}
+	</style>
+	<table class="table">
 		<tr>
 			<td>
 				<div id="chart_div"></div>
@@ -121,7 +125,7 @@
 				<select id="person1"
 					class="select" size="1"
 					onchange="selectOption(person1.value,category1.value,'empty1_div')">
-						<option>person</option>
+					<option value=null>person</option>
 					<%
 						for (List<Object> list : persons) {
 					%>
@@ -131,7 +135,7 @@
 					%>
 				</select>
 				<select id="category1" size="1" onchange="selectOption(person1.value,category1.value,'empty1_div')">
-					<option>category</option>
+					<option value=null>category</option>
 					<%
 						for (List<Object> list : categories) {
 					%>
@@ -156,7 +160,7 @@
 					%>
 				</select>
 				<select id="category2" size="1" onchange="selectOption(person2.value,category2.value,'empty2_div')">
-					<option>category</option>
+					<option value=null>category</option>
 					<%
 						for (List<Object> list : categories) {
 					%>

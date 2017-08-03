@@ -48,6 +48,6 @@ public class InfluxDBConn {
 		return this.influxDB;
 	}	
 	public void InfluxDBClose() {
-		influxDB = null;
+		influxDB.close();
 	}
 }

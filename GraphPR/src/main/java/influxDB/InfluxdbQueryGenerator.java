@@ -6,10 +6,10 @@ import org.influxdb.InfluxDB;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 
-import com.timegraph.controller.HomeController;
+import com.timegraph.dao.InfluxdbDAO;
 import com.timegraph.dataProcess.MakingDate;
 
-public class InfluxdbCountQuery {
+public class InfluxdbQueryGenerator {
 	
 	private InfluxDB influxDB;
 
@@ -17,11 +17,12 @@ public class InfluxdbCountQuery {
 	QueryResult result;
 	List<List<Object>> lists;
 	String sql;
-	final String measurement = HomeController.MEASUREMENT;
+	final String database = InfluxdbDAO.DATABASE;
+	final String measurement = InfluxdbDAO.MEASUREMENT;
 	final String timeCondition = "time<\'"+new MakingDate().dateToday()+"\'";
 	final String timeInterval = "group by time(1d)";
 
-	public InfluxdbCountQuery(InfluxDB influxDB) {
+	public InfluxdbQueryGenerator(InfluxDB influxDB) {
 		this.influxDB = influxDB;
 	}
 
@@ -40,9 +41,12 @@ public class InfluxdbCountQuery {
 	public void selectPersonWithCategory(String field,String person, String category) {
 		sql = "select count("+field+") from "+measurement+" where "+timeCondition+" and person = \'"+person+"\' and categoryName = \'"+category+"\' "+timeInterval;
 	}
+	public void tagValues(String key) {
+		sql = "show tag values with key in("+key+")";
+	}
 	
 	public List<List<Object>> execute(){
-		query = new Query(sql, HomeController.DATABASE);
+		query = new Query(sql, database);
 		result = influxDB.query(query);
 		System.out.println(sql);
 		System.out.println(result);
