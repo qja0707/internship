@@ -13,19 +13,23 @@
 <script type="text/javascript">
 
 	window.onload=function(){
-		googleChart('PC or Mobile',${datas},'chart_div');
+		googleChart('total','total','PC or Mobile',${datas},'chart_div');
 	}
 
 	google.charts.load('current', {
 		packages : [ 'corechart' ]
 	});
 
-	function selectOption(person,category,div){
+	function selectOption(person,category,service,div){
 		console.log(person);
 		console.log(category);
+		console.log(service);
+		
 		var selected = new Object();
 		selected.person = person;
 		selected.category = category;
+		selected.service = service;
+		
 		var jsonData = JSON.stringify(selected)
 		$.ajax({
 			type : 'GET',
@@ -37,18 +41,18 @@
 			success : function(response){
 				console.log(typeof response);
 				console.log(response);
-				googleChart(person,response,div);
+				googleChart(person,category,service,response,div);
 			}
 		});
 	}
-	function googleChart(person,response,div){
+	function googleChart(person,category,service,response,div){
 		
-		google.charts.setOnLoadCallback(drawBasic(person,response,div));
+		google.charts.setOnLoadCallback(drawBasic(person,category,service,response,div));
 		
-		function drawBasic(person,response,div){
+		function drawBasic(person,category,service,response,div){
 			var data = new google.visualization.DataTable();
 			data.addColumn('string', 'Time');
-			data.addColumn('number', person);
+			data.addColumn('number', person+"\n"+category+"\n"+service);
 			data.addRows(response);
 			
 			var options = {
@@ -57,7 +61,7 @@
 					title : 'Time'
 				},
 				vAxis : {
-					title : 'Number', format : '0'
+					title : 'Number of srObject', format : '0'
 				},
 				pointSize: 5,
 				width:'100%',
@@ -79,8 +83,11 @@
 	
 	<div id = "chart_div"></div>
 	<select id="person0" class="select"
-		size="1" onchange="selectOption(person0.value,category0.value,'chart_div')">
-		<option value=null>person</option>
+		size="1" onchange="selectOption(person0.value,
+										category0.value,
+										service.value,
+										'chart_div')">
+		<option value=total>person : total</option>
 		<%
 			for (List<Object> list : persons) {
 		%>
@@ -89,8 +96,11 @@
 			}
 		%>
 	</select>
-	<select id="category0" size="1" onchange="selectOption(person0.value,category0.value,'chart_div')">
-		<option value=null>category</option>
+	<select id="category0" size="1" onchange="selectOption(person0.value,
+												category0.value,
+												service.value,
+												'chart_div')">
+		<option value=total>category : total</option>
 		<%
 			for (List<Object> list : categories) {
 		%>
@@ -98,6 +108,14 @@
 		<%
 			}
 		%>
+	</select>
+	<select id="service" size = "1" onchange="selectOption(person0.value,
+												category0.value,
+												service.value,
+												'chart_div')">
+		<option value="PC or Mobile">PC or Mobile</option>
+		<option value=pcServiceYn>PC</option>
+		<option value=mobileServiceYn>Mobile</option>
 	</select>
 </body>
 </html>

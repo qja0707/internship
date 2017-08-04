@@ -45,12 +45,14 @@ public class HomeController {
 		
 		model.addAttribute("datas", pcOrMobileDatas.getDatas());
 		
+		
+		
+		// for select box in web page
 		InfluxdbDTO persons = new InfluxdbDTO();
 		InfluxdbDTO categories = new InfluxdbDTO();
 		
 		persons.setTag(person);
 		categories.setTag(categoryName);
-		
 		persons = graphPrService.getTagValues(persons);
 		categories = graphPrService.getTagValues(categories);
 
@@ -71,7 +73,12 @@ public class HomeController {
 
 		InfluxdbDTO dto = new InfluxdbDTO();
 		
-		dto.setField(pcServiceYn);
+		if(jsonData.get("service").equals("PC or Mobile")) {
+			dto.setField(pcServiceYn);
+			dto.setField2(mobileServiceYn);
+		}else {
+			dto.setField((String) jsonData.get("service"));
+		}
 		dto.setPerson((String) jsonData.get("person"));
 		dto.setCategoryName((String) jsonData.get("category"));
 		

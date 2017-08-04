@@ -15,12 +15,6 @@ public class GraphPrService {
 	QueryResult result;
 	
 	public GraphPrService() {
-		try {
-			Class.forName("groovy.lang.GroovyObject");
-		} catch (ClassNotFoundException e) {
-			System.out.println("groovy faild~~~~~~~~~");
-			e.printStackTrace();
-		}
 		influxdbDAO = new InfluxdbDAO();
 	}
 	

@@ -11,7 +11,7 @@ class QueryGenerator {
 	private String query;
 	private InfluxdbDTO dto;
 	
-	private String none = "null"
+	private String none = "total"
 	
 	public QueryGenerator(InfluxdbDTO dto) {
 		this.dto = dto;
@@ -38,20 +38,20 @@ class QueryGenerator {
 	
 		query += 	"""	WHERE time<'${dateToday()}'	"""
 		
-		if(dto.getField()!=null&&!dto.getField().equals("null") 
-			&& dto.getField2()!=null&&!dto.getField2().equals("null")) {
+		if(dto.getField()!=null&&!dto.getField().equals(none) 
+			&& dto.getField2()!=null&&!dto.getField2().equals(none)) {
 			
 			query += """and (${dto.getField()} = 'Y' or ${dto.getField2()} = 'Y') """
 			
-		}else if(dto.getField()!=null&&!dto.getField().equals("null")) {
+		}else if(dto.getField()!=null&&!dto.getField().equals(none)) {
 			query += """and ${dto.getField()} = 'Y' """
 		}
 		
-		if(dto.getPerson()!=null&&!dto.getPerson().equals("null")) {
+		if(dto.getPerson()!=null&&!dto.getPerson().equals(none)) {
 			query += """and person = \'${dto.getPerson()}\' """
 		}
 		
-		if(dto.getCategoryName()!=null&&!dto.getCategoryName().equals("null")) {
+		if(dto.getCategoryName()!=null&&!dto.getCategoryName().equals(none)) {
 			query += """and categoryName = \'${dto.getCategoryName()}\' """
 		}
 	}
