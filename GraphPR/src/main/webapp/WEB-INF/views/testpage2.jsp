@@ -14,8 +14,6 @@
 
 	window.onload=function(){
 		googleChart('PC or Mobile',${datas},'chart_div');
-		googleChart('PC',${pcDatas},'pcChart_div');
-		googleChart('Mobile',${mobileDatas},'mobileChart_div');
 	}
 
 	google.charts.load('current', {
@@ -63,7 +61,7 @@
 				},
 				pointSize: 5,
 				width:'100%',
-				height:'100%'
+				height:600
 			};
 			var chart = new google.visualization.ColumnChart(document
 				.getElementById(div));
@@ -74,7 +72,6 @@
 </script>
 </head>
 <body>
-
 	<%
 		List<List<Object>> persons = (List<List<Object>>) request.getAttribute("persons");
 		List<List<Object>> categories = (List<List<Object>>) request.getAttribute("categories");
@@ -102,100 +99,5 @@
 			}
 		%>
 	</select>
-	<%-- <style>
-	.table{border-collapse:collapse;}
-	.table th, .table td{border:1px solid black;}
-	</style>
-	<table class="table">
-		<tr>
-			<td>
-				<div id="chart_div"></div>
-			</td>
-			<td>
-				<div id="pcChart_div"></div>
-			</td>
-			<td>
-				<div id="mobileChart_div"></div>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<div id="empty0_div"></div> 
-				<select id="person0" class="select"
-				size="1" onchange="selectOption(person0.value,category0.value,'empty0_div')">
-					<option value=null>person</option>
-					<%
-						for (List<Object> list : persons) {
-					%>
-					<option value=<%=list.get(1)%>><%=list.get(1)%></option>
-					<%
-						}
-					%>
-				</select>
-				<select id="category0" size="1" onchange="selectOption(person0.value,category0.value,'empty0_div')">
-					<option value=null>category</option>
-					<%
-						for (List<Object> list : categories) {
-					%>
-					<option value=<%=list.get(1)%>><%=list.get(1)%></option>
-					<%
-						}
-					%>
-				</select>
-			</td>
-			<td>
-			<div id="empty1_div"></div>
-				<select id="person1"
-					class="select" size="1"
-					onchange="selectOption(person1.value,category1.value,'empty1_div')">
-					<option value=null>person</option>
-					<%
-						for (List<Object> list : persons) {
-					%>
-					<option value=<%=list.get(1)%>><%=list.get(1)%></option>
-					<%
-						}
-					%>
-				</select>
-				<select id="category1" size="1" onchange="selectOption(person1.value,category1.value,'empty1_div')">
-					<option value=null>category</option>
-					<%
-						for (List<Object> list : categories) {
-					%>
-					<option value=<%=list.get(1)%>><%=list.get(1)%></option>
-					<%
-						}
-					%>
-				</select>
-			</td>
-			<td>
-			<div id="empty2_div"></div>
-				<select id="person2"
-					class="select" size="1"
-					onchange="selectOption(person2.value,category2.value,'empty2_div')">
-					<option value=null>person</option>
-					<%
-						for (List<Object> list : persons) {
-					%>
-					<option value=<%=list.get(1)%>><%=list.get(1)%></option>
-					<%
-						}
-					%>
-				</select>
-				<select id="category2" size="1" onchange="selectOption(person2.value,category2.value,'empty2_div')">
-					<option value=null>category</option>
-					<%
-						for (List<Object> list : categories) {
-					%>
-					<option value=<%=list.get(1)%>><%=list.get(1)%></option>
-					<%
-						}
-					%>
-				</select>
-			</td>
-		</tr>
-	</table> --%>
-
-	<%-- ${datas} --%>
 </body>
 </html>

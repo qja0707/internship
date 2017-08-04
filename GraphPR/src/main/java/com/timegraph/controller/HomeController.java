@@ -1,6 +1,5 @@
 package com.timegraph.controller;
 
-import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +15,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.timegraph.dao.InfluxdbDAO;
+import com.timegraph.bo.GraphPrService;
 import com.timegraph.dto.InfluxdbDTO;
 
 /**
@@ -31,36 +30,30 @@ public class HomeController {
 	private final String mobileServiceYn = "mobileServiceYn";
 	private final String person = "person";
 	private final String categoryName = "categoryName";
-	
-	private final String stringNull = "null";
 
-	InfluxdbDAO influxdbDAO = new InfluxdbDAO();
+	GraphPrService graphPrService = new GraphPrService();
 	
 	@RequestMapping(value = "/srObject", method = RequestMethod.GET)
 	public String home(Locale locale, Model model) {
 		logger.info("Welcome home! The client locale is {}.", locale);
 
 		InfluxdbDTO pcOrMobileDatas = new InfluxdbDTO();
-		InfluxdbDTO mobileDatas = new InfluxdbDTO();
-		InfluxdbDTO pcDatas = new InfluxdbDTO();
 		
 		pcOrMobileDatas.setField(pcServiceYn);
 		pcOrMobileDatas.setField2(mobileServiceYn);
-		mobileDatas.setField(mobileServiceYn);
-		pcDatas.setField(pcServiceYn);
-		pcOrMobileDatas.setDatas((influxdbDAO.readDatas(pcOrMobileDatas)).getDatas());
-		mobileDatas=influxdbDAO.readDatas(mobileDatas);
-		pcDatas=influxdbDAO.readDatas(pcDatas);
+		pcOrMobileDatas = graphPrService.read(pcOrMobileDatas);
 		
 		model.addAttribute("datas", pcOrMobileDatas.getDatas());
-		model.addAttribute("mobileDatas", mobileDatas.getDatas());
-		model.addAttribute("pcDatas",pcDatas.getDatas());
 		
 		InfluxdbDTO persons = new InfluxdbDTO();
 		InfluxdbDTO categories = new InfluxdbDTO();
+		
+		persons.setTag(person);
+		categories.setTag(categoryName);
+		
+		persons = graphPrService.getTagValues(persons);
+		categories = graphPrService.getTagValues(categories);
 
-		persons.setDatas(influxdbDAO.getTagValues(person));
-		categories.setDatas(influxdbDAO.getTagValues(categoryName));
 		model.addAttribute("persons",persons.getDatas());
 		model.addAttribute("categories",categories.getDatas());
 		
@@ -82,15 +75,8 @@ public class HomeController {
 		dto.setPerson((String) jsonData.get("person"));
 		dto.setCategoryName((String) jsonData.get("category"));
 		
-		if(!dto.getPerson().equals(stringNull) && !dto.getCategoryName().equals(stringNull)) {
-			dto = influxdbDAO.readDatasPerPersonAndCategory(dto);
-		}else if(!dto.getPerson().equals(stringNull)) {
-			dto = influxdbDAO.readDatasPerPerson(dto);
-		}else if(!dto.getCategoryName().equals(stringNull)) {
-			dto = influxdbDAO.readDatasPerCategory(dto);
-		}else {
-			dto=null;
-		}
+		dto = graphPrService.read(dto);
+		
 		JSONArray jsonObj = (JSONArray) parser.parse(String.valueOf(dto.getDatas()));
 		System.out.println(jsonObj);
 		request.setAttribute("countedData",jsonObj);

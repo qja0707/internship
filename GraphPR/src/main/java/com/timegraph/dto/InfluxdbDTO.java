@@ -3,6 +3,7 @@ package com.timegraph.dto;
 import java.util.List;
 
 public class InfluxdbDTO {
+	private String tag;
 	private String field;
 	private String field2;
 	private String person;
@@ -11,6 +12,12 @@ public class InfluxdbDTO {
 	private List<List<Object>> datas;
 
 	
+	public String getTag() {
+		return tag;
+	}
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
 	public String getField() {
 		return field;
 	}
