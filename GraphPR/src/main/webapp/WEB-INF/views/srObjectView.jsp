@@ -73,6 +73,29 @@
 		}
 	}
 	
+	
+	//not used
+	function changeCategory(person){
+		console.log("this is the test of new function");
+		var selected = new Object();
+		selected.person = person;
+		
+		var jsonData = JSON.stringify(selected)
+		$.ajax({
+			type : 'GET',
+			url :'/srObject/optionData',
+			contentType : 'application/json;charset=UTF-8',
+			data : {'jsonData':jsonData},
+			dataType:'json',
+			error : function(response){alert("No Data");},
+			success : function(response){
+				console.log(typeof response);
+				console.log(response);
+				
+			}
+		});
+	}
+	
 </script>
 </head>
 <body>

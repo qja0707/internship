@@ -18,12 +18,11 @@ public class GraphPrService {
 		influxdbDAO = new InfluxdbDAO();
 	}
 	
-	public InfluxdbDTO read(InfluxdbDTO dto) {
+	public InfluxdbDTO getDatas(InfluxdbDTO dto) {
 		queryGenerator = new QueryGenerator(dto);
 		
 		queryGenerator.select();
-		queryGenerator.where();
-		queryGenerator.groupBy();
+		
 		sql = queryGenerator.getQuery();
 		
 		result = influxdbDAO.read(sql);
@@ -50,6 +49,19 @@ public class GraphPrService {
 			newItem = newItem.substring(0, 10);
 			newItem = "\""+newItem+"\"";
 			list.set(0, newItem);
+		}
+		return items;
+	}
+	
+	//not used
+	protected List<List<Object>> forJson(List<List<Object>> items){
+		for (List<Object> list : items) {
+			String newItem = String.valueOf(list.get(0));
+			String newItem2 = String.valueOf(list.get(1));
+			newItem = "\""+newItem+"\"";
+			newItem2 = "\""+newItem+"\"";
+			list.set(0, newItem);
+			list.set(1, newItem2);
 		}
 		return items;
 	}

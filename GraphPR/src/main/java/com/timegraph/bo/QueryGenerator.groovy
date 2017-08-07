@@ -21,49 +21,64 @@ class QueryGenerator {
 		println query;
 		return query;
 	}
-	/*public String generate() {
-		select();
-		where();
-		groupBy();
-		
-		return query;
-	}*/
-	
 	public void select() {
-		query	= """SELECT COUNT(pcServiceYn)
-						FROM ${InfluxdbDAO.MEASUREMENT}	"""
-	}
-	
-	public void where() {
-	
-		query += 	"""	WHERE time<'${dateToday()}'	"""
+		query = """
+				SELECT COUNT(pcServiceYn)
+						FROM ${InfluxdbDAO.MEASUREMENT}	
+						WHERE time<'${dateToday()}'
+				"""
 		
 		if(dto.getField()!=null&&!dto.getField().equals(none) 
-			&& dto.getField2()!=null&&!dto.getField2().equals(none)) {
+		&& dto.getField2()!=null&&!dto.getField2().equals(none)) {
 			
-			query += """and (${dto.getField()} = 'Y' or ${dto.getField2()} = 'Y') """
-			
+			query += 
+				"""
+				AND (${dto.getField()} = 'Y' OR ${dto.getField2()} = 'Y') 
+				"""
+					
 		}else if(dto.getField()!=null&&!dto.getField().equals(none)) {
-			query += """and ${dto.getField()} = 'Y' """
+			query += 
+				"""
+				AND ${dto.getField()} = 'Y' 
+				"""
 		}
 		
 		if(dto.getPerson()!=null&&!dto.getPerson().equals(none)) {
-			query += """and person = \'${dto.getPerson()}\' """
+			query += 
+				"""
+				AND person = \'${dto.getPerson()}\' 
+				"""
 		}
 		
 		if(dto.getCategoryName()!=null&&!dto.getCategoryName().equals(none)) {
-			query += """and categoryName = \'${dto.getCategoryName()}\' """
+			query += 
+				"""
+				AND categoryName = \'${dto.getCategoryName()}\' 
+				"""
 		}
-	}
-	
-	public void groupBy() {
-		query += "GROUP BY time(1d)";
+		
+		query +="""
+				GROUP BY time(1d)
+				"""
 	}
 	
 	public void showTag() {
-		query = """show tag values with key in (${dto.getTag()})"""
+		query = """
+				SHOW TAG VALUES WITH KEY IN (${dto.getTag()})
+				"""
+		
+		if(dto.getPerson()!=null&&!dto.getPerson().equals(none)) {
+			query += 
+				"""
+				WHERE person = \'${dto.getPerson()}\' 
+				"""
+		}else if(dto.getCategoryName()!=null&&!dto.getCategoryName().equals(none)) {
+			query += 
+				"""
+				WHERE categoryName = \'${dto.getCategoryName()}\' 
+				"""
+		}
 	}
-	
 	
 	protected String dateToday() {
 		
