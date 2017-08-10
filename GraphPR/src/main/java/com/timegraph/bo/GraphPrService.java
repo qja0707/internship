@@ -38,8 +38,6 @@ public class GraphPrService {
 		System.out.println("pool: "+pool);
 		System.out.println("created:"+pool.getCreatedCount());
 		System.out.println("destroyed:"+pool.getDestroyedCount());
-		System.out.println("borrowed:"+pool.getBorrowedCount());
-		System.out.println("returned:"+pool.getReturnedCount());
 		pool.returnObject(influxDB);
 		return dto;
 	}
@@ -54,7 +52,9 @@ public class GraphPrService {
 		String sql = queryGenerator.getQuery();
 		
 		QueryResult result = influxdbDAO.read(sql);
-		dto.setDatas(result.getResults().get(0).getSeries().get(0).getValues());
+		
+		List<List<Object>> resultForJson = forJson(result.getResults().get(0).getSeries().get(0).getValues());
+		dto.setDatas(resultForJson);
 		
 		pool.returnObject(influxDB);
 		return dto;
@@ -76,7 +76,7 @@ public class GraphPrService {
 			String newItem = String.valueOf(list.get(0));
 			String newItem2 = String.valueOf(list.get(1));
 			newItem = "\""+newItem+"\"";
-			newItem2 = "\""+newItem+"\"";
+			newItem2 = "\""+newItem2+"\"";
 			list.set(0, newItem);
 			list.set(1, newItem2);
 		}

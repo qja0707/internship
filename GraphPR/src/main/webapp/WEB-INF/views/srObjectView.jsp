@@ -67,7 +67,7 @@
 				width:'100%',
 				height:600
 			};
-			var chart = new google.visualization.ColumnChart(document
+			var chart = new google.visualization.AreaChart(document
 				.getElementById(div));
 			chart.draw(data,options);
 		}
@@ -92,6 +92,13 @@
 				console.log(typeof response);
 				console.log(response);
 				
+				$("#category0").find("option").remove();
+				$("#category0").append("<option value='total'>category : total</option>");
+				
+				for(i in response){
+					$("#category0").append("<option value='"+response[i][1]+"'>"+response[i][1]+"</option>");
+					console.log(response[i][1]);
+				}
 			}
 		});
 	}
@@ -109,7 +116,8 @@
 		size="1" onchange="selectOption(person0.value,
 										category0.value,
 										service.value,
-										'chart_div')">
+										'chart_div'),
+							changeCategory(person0.value)">
 		<option value=total>person : total</option>
 		<%
 			for (List<Object> list : persons) {

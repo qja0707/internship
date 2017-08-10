@@ -33,7 +33,7 @@ public class HomeController {
 	GraphPrService graphPrService = new GraphPrService();
 	
 	@RequestMapping(value = "/srObject", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) throws Exception {
+	public String home(Locale locale, HttpServletRequest request) throws Exception {
 		logger.info("Welcome home! The client locale is {}.", locale);
 		
 		InfluxdbDTO pcOrMobileDatas = new InfluxdbDTO();
@@ -42,7 +42,7 @@ public class HomeController {
 		pcOrMobileDatas.setField2(mobileServiceYn);
 		pcOrMobileDatas = graphPrService.getDatas(pcOrMobileDatas);
 		
-		model.addAttribute("datas", pcOrMobileDatas.getDatas());
+		request.setAttribute("datas", pcOrMobileDatas.getDatas());
 		
 		// for select box in web page
 		InfluxdbDTO persons = new InfluxdbDTO();
@@ -53,8 +53,13 @@ public class HomeController {
 		persons = graphPrService.getTagValues(persons);
 		categories = graphPrService.getTagValues(categories);
 
-		model.addAttribute("persons",persons.getDatas());
-		model.addAttribute("categories",categories.getDatas());
+		System.out.println(persons.getDatas());
+		JSONParser parser = new JSONParser();
+		JSONArray jsonPersons = (JSONArray) parser.parse(String.valueOf(persons.getDatas()));
+		JSONArray jsonCategories = (JSONArray) parser.parse(String.valueOf(categories.getDatas()));
+		
+		request.setAttribute("persons",jsonPersons);
+		request.setAttribute("categories",jsonCategories);
 		
 		return "srObjectView";
 		
@@ -103,7 +108,6 @@ public class HomeController {
 		dto.setTag(categoryName);
 		
 		dto = graphPrService.getTagValues(dto);
-		System.out.println(dto.getDatas());
 		
 		JSONArray jsonObj = (JSONArray) parser.parse(String.valueOf(dto.getDatas()));
 		System.out.println(jsonObj);

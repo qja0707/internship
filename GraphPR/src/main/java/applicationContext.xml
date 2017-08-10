@@ -15,8 +15,8 @@
 			<constructor-arg>
 				<ref bean="influxConnectionFactory"/>
 			</constructor-arg>
-			<property name="maxTotal" value="100"/>
-			<property name="maxIdle" value="100"/>
+			<property name="maxTotal" value="10"/>
+			<property name="maxIdle" value="10"/>
 		</bean> 
 		
 </beans>
