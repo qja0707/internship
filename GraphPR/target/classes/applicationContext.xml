@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+		
+		<bean id="influxConnectionFactory" class = "influxDB.InfluxConnectionFactory">
+			<property name="ip" value="10.110.248.58"/>
+			<property name="port" value="8086"/>
+			<property name="user" value="root"/>
+			<property name="password" value="root"/>
+			<property name="database" value="Statistics"/>
+		</bean>
+		
+		<bean id="pool" class="org.apache.commons.pool2.impl.GenericObjectPool">
+			<constructor-arg>
+				<ref bean="influxConnectionFactory"/>
+			</constructor-arg>
+			<property name="maxTotal" value="100"/>
+			<property name="maxIdle" value="100"/>
+		</bean> 
+		
+</beans>

@@ -21,11 +21,11 @@ class QueryGenerator {
 		println query;
 		return query;
 	}
-	public void select() {
+	public void select() {		//default : WHERE time<'${dateToday()}'
 		query = """
 				SELECT COUNT(pcServiceYn)
 						FROM ${InfluxdbDAO.MEASUREMENT}	
-						WHERE time<'${dateToday()}'
+						WHERE time<'2017-08-07'				
 				"""
 		
 		if(dto.getField()!=null&&!dto.getField().equals(none) 
