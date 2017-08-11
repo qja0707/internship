@@ -73,8 +73,6 @@
 		}
 	}
 	
-	
-	//not used
 	function changeCategory(person){
 		console.log("this is the test of new function");
 		var selected = new Object();

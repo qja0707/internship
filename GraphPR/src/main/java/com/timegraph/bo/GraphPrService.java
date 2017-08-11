@@ -21,42 +21,59 @@ public class GraphPrService {
 	
 	AbstractApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 	
-	public InfluxdbDTO getDatas(InfluxdbDTO dto) throws Exception {
+	public InfluxdbDTO getDatas(InfluxdbDTO dto) {
 		pool = (GenericObjectPool<InfluxDB>) context.getBean("pool");
-		InfluxDB influxDB = (InfluxDB) pool.borrowObject();
-		influxdbDAO = new InfluxdbDAO(influxDB);
+		InfluxDB influxDB=null;
+		try {
+			
+			influxDB = (InfluxDB) pool.borrowObject();
+			influxdbDAO = new InfluxdbDAO(influxDB);
+			queryGenerator = new QueryGenerator(dto);
+			queryGenerator.select();
+			String sql = queryGenerator.getQuery();
+			
+			QueryResult result = influxdbDAO.read(sql);
+			List<List<Object>> resultForGoogleChart = 
+					dateToString(result.getResults().get(0).getSeries().get(0).getValues());
+			dto.setDatas(resultForGoogleChart);
+			
+			System.out.println("pool: "+pool);
+			System.out.println("created:"+pool.getCreatedCount());
+			System.out.println("destroyed:"+pool.getDestroyedCount());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			if(influxDB!=null)
+				pool.returnObject(influxDB);
+		}
 		
-		queryGenerator = new QueryGenerator(dto);
-		queryGenerator.select();
-		String sql = queryGenerator.getQuery();
-		
-		QueryResult result = influxdbDAO.read(sql);
-		List<List<Object>> resultForGoogleChart = 
-				dateToString(result.getResults().get(0).getSeries().get(0).getValues());
-		dto.setDatas(resultForGoogleChart);
-		
-		System.out.println("pool: "+pool);
-		System.out.println("created:"+pool.getCreatedCount());
-		System.out.println("destroyed:"+pool.getDestroyedCount());
-		pool.returnObject(influxDB);
 		return dto;
 	}
 	
-	public InfluxdbDTO getTagValues(InfluxdbDTO dto) throws Exception{
+	public InfluxdbDTO getTagValues(InfluxdbDTO dto){
 		pool = (GenericObjectPool<InfluxDB>) context.getBean("pool");
-		InfluxDB influxDB = (InfluxDB) pool.borrowObject();
-		influxdbDAO = new InfluxdbDAO(influxDB);
-		
-		queryGenerator = new QueryGenerator(dto);
-		queryGenerator.showTag();
-		String sql = queryGenerator.getQuery();
-		
-		QueryResult result = influxdbDAO.read(sql);
-		
-		List<List<Object>> resultForJson = forJson(result.getResults().get(0).getSeries().get(0).getValues());
-		dto.setDatas(resultForJson);
-		
-		pool.returnObject(influxDB);
+		InfluxDB influxDB=null;
+		try {
+			influxDB = (InfluxDB) pool.borrowObject();
+			influxdbDAO = new InfluxdbDAO(influxDB);
+			
+			queryGenerator = new QueryGenerator(dto);
+			queryGenerator.showTag();
+			String sql = queryGenerator.getQuery();
+			
+			QueryResult result = influxdbDAO.read(sql);
+			
+			List<List<Object>> resultForJson = forJson(result.getResults().get(0).getSeries().get(0).getValues());
+			dto.setDatas(resultForJson);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if(influxDB!=null)
+				pool.returnObject(influxDB);
+		}
 		return dto;
 	}
 	

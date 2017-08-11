@@ -21,6 +21,12 @@ public class InfluxConnectionFactory extends BasePooledObjectFactory<InfluxDB>{
 	public PooledObject<InfluxDB> wrap(InfluxDB influxDB) {
 		return new DefaultPooledObject<InfluxDB>(influxDB);
 	}
+	
+	@Override
+	public void destroyObject(PooledObject<InfluxDB> p) {
+		p.getObject().close();
+		p=null;
+	}
 
 	public void setIp(String ip) {
 		this.ip = ip;
