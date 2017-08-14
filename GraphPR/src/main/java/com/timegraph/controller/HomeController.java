@@ -93,7 +93,6 @@ public class HomeController {
 		return "personData";
 	}
 	
-	//not used
 	@RequestMapping(value = "/srObject/optionData",method = RequestMethod.GET)
 	public String optionData(HttpServletRequest request) throws Exception {
 		
@@ -104,14 +103,19 @@ public class HomeController {
 
 		InfluxdbDTO dto = new InfluxdbDTO();
 		
-		dto.setPerson((String) jsonData.get("person"));
-		dto.setTag(categoryName);
+		if(jsonData.get("person")==null) {
+			dto.setCategoryName((String) jsonData.get("category"));
+			dto.setTag(person);
+		}else {
+			dto.setPerson((String) jsonData.get("person"));
+			dto.setTag(categoryName);
+		}
 		
 		dto = graphPrService.getTagValues(dto);
 		
 		JSONArray jsonObj = (JSONArray) parser.parse(String.valueOf(dto.getDatas()));
 		System.out.println(jsonObj);
-		request.setAttribute("categoryData",dto.getDatas());
+		request.setAttribute("optionData",dto.getDatas());
 		
 		return "optionData";
 	}

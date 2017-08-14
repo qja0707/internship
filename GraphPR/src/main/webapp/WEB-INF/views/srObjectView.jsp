@@ -73,7 +73,7 @@
 		}
 	}
 	
-	function changeCategory(person){
+	function changeCategory(person,category){
 		console.log("this is the test of new function");
 		var selected = new Object();
 		selected.person = person;
@@ -90,13 +90,42 @@
 				console.log(typeof response);
 				console.log(response);
 				
-				$("#category0").find("option").remove();
-				$("#category0").append("<option value='total'>category : total</option>");
+				$("#category").find("option").remove();
+				$("#category").append("<option value='total'>category : total</option>");
 				
 				for(i in response){
-					$("#category0").append("<option value='"+response[i][1]+"'>"+response[i][1]+"</option>");
+					$("#category").append("<option value='"+response[i][1]+"'>"+response[i][1]+"</option>");
 					console.log(response[i][1]);
 				}
+				$("#category").val(category).attr("selected","selected");
+			}
+		});
+	}
+	function changePerson(person, category){
+		console.log("this is the test of new function");
+		var selected = new Object();
+		selected.category = category;
+		
+		var jsonData = JSON.stringify(selected)
+		$.ajax({
+			type : 'GET',
+			url :'/srObject/optionData',
+			contentType : 'application/json;charset=UTF-8',
+			data : {'jsonData':jsonData},
+			dataType:'json',
+			error : function(response){alert("No Data");},
+			success : function(response){
+				console.log(typeof response);
+				console.log(response);
+				
+				$("#person").find("option").remove();
+				$("#person").append("<option value='total'>person : total</option>");
+				
+				for(i in response){
+					$("#person").append("<option value='"+response[i][1]+"'>"+response[i][1]+"</option>");
+					console.log(response[i][1]);
+				}
+				$("#person").val(person).attr("selected","selected");
 			}
 		});
 	}
@@ -110,12 +139,12 @@
 	%>
 	
 	<div id = "chart_div"></div>
-	<select id="person0" class="select"
-		size="1" onchange="selectOption(person0.value,
-										category0.value,
+	<select id="person" class="select"
+		size="1" onchange="selectOption(person.value,
+										category.value,
 										service.value,
 										'chart_div'),
-							changeCategory(person0.value)">
+							changeCategory(person.value,category.value)">
 		<option value=total>person : total</option>
 		<%
 			for (List<Object> list : persons) {
@@ -125,10 +154,11 @@
 			}
 		%>
 	</select>
-	<select id="category0" size="1" onchange="selectOption(person0.value,
-												category0.value,
+	<select id="category" size="1" onchange="selectOption(person.value,
+												category.value,
 												service.value,
-												'chart_div')">
+												'chart_div'),
+											changePerson(person.value,category.value)">
 		<option value=total>category : total</option>
 		<%
 			for (List<Object> list : categories) {
@@ -138,8 +168,8 @@
 			}
 		%>
 	</select>
-	<select id="service" size = "1" onchange="selectOption(person0.value,
-												category0.value,
+	<select id="service" size = "1" onchange="selectOption(person.value,
+												category.value,
 												service.value,
 												'chart_div')">
 		<option value="PC or Mobile">PC or Mobile</option>
