@@ -36,7 +36,7 @@ public class MysqlReader implements ItemStreamReader<DatasetVO>{
 			"		WHERE A.object_id = B.object_id  " + 
 			"			AND A.service_status='Y'  " + 
 			"			AND A.startdate <= now() AND A.enddate >=now()";
-			//"			AND A.startdate <= (now() - interval 8 day) AND A.enddate >=(now() - interval 8 day)";
+			//"			AND A.startdate <= (now() - interval 8 day) AND A.enddate >=(now() - interval 8 day)";					특정 날짜의 데이터를 넣을 때
 	
 	Connection conn; 
 	Statement stmt;
@@ -56,7 +56,6 @@ public class MysqlReader implements ItemStreamReader<DatasetVO>{
 			dataset.setCategoryId(rs.getLong("B.category_id"));
 			dataset.setCategoryName(rs.getString("category_name"));
 			num++;
-			//return dataset;
 		}
 		System.out.println(READ+num+" is read");
 		

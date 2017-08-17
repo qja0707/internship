@@ -48,7 +48,7 @@ public class InfluxdbWriter implements ItemStreamWriter<DatasetVO> {
 	}
 
 	@Override
-	public void open(ExecutionContext executionContext) throws ItemStreamException {
+	public void open(ExecutionContext executionContext) throws ItemStreamException {		//writing step 시작할 때 influxDB 연결
 		presentTime = CUSTOM_DATE + TIME_DIFFERENCE;
 		db = new InfluxDBConn(IP_ADDR,PORT,DATABASE,USER,PASSWORD);
 		try {
@@ -64,7 +64,7 @@ public class InfluxdbWriter implements ItemStreamWriter<DatasetVO> {
 	}
 
 	@Override
-	public void close() throws ItemStreamException {
+	public void close() throws ItemStreamException {			//writing step 끝난 후 influxDB 연결 끊기
 		if(db!=null) {
 			db.closeDB();
 		}

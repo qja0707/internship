@@ -13,7 +13,7 @@
 <script type="text/javascript">
 
 	window.onload=function(){
-		googleChart('total','total','PC or Mobile',${datas},'chart_div');
+		googleChart(${datas},'chart_div');
 	}
 
 	google.charts.load('current', {
@@ -33,27 +33,40 @@
 		var jsonData = JSON.stringify(selected)
 		$.ajax({
 			type : 'GET',
-			url :'/srObject/personData',
+			url :'/srObject/selectedData',
 			contentType : 'application/json;charset=UTF-8',
 			data : {'jsonData':jsonData},
 			dataType:'json',
 			error : function(response){alert("No Data");},
 			success : function(response){
+				if(response==null){
+					alert("No Data");
+				}
 				console.log(typeof response);
 				console.log(response);
-				googleChart(person,category,service,response,div);
+				googleChart(response,div);
 			}
 		});
 	}
-	function googleChart(person,category,service,response,div){
+	function googleChart(response,div){
+		console.log(typeof response);
+		var maxNum=0;
+		var minNum=10000;
+		for(var i in response){				//그래프 y축의 최댓값과 최솟값을 지정할 때 사용
+			if(maxNum<response[i][1]){
+				maxNum=response[i][1];
+			}
+			if(minNum>response[i][1]){
+				minNum=response[i][1];
+			}
+		}
+		console.log(maxNum);
 		
-		google.charts.setOnLoadCallback(drawBasic(person,category,service,response,div));
+		google.charts.setOnLoadCallback(drawBasic(response,div));
 		
-		function drawBasic(person,category,service,response,div){
-			var data = new google.visualization.DataTable();
-			data.addColumn('string', 'Time');
-			data.addColumn('number', person+"\n"+category+"\n"+service);
-			data.addRows(response);
+		function drawBasic(response,div){
+			console.log(response);
+			var data = new google.visualization.arrayToDataTable(response,false);
 			
 			var options = {
 					
@@ -61,11 +74,13 @@
 					title : 'Time'
 				},
 				vAxis : {
-					title : 'Number of srObject', format : '0'
+					title : 'Number of srObject', 
+					format : '0',
+					//maxValue: maxNum + maxNum/10,
 				},
 				pointSize: 5,
 				width:'100%',
-				height:600
+				height:600,
 			};
 			var chart = new google.visualization.AreaChart(document
 				.getElementById(div));
@@ -73,10 +88,15 @@
 		}
 	}
 	
-	function changeCategory(person,category){
-		console.log("this is the test of new function");
+	function changeOption(caller, callee){		//콤보 박스 간 연동을 위한 함수
+		var preSelected = callee.value;
 		var selected = new Object();
-		selected.person = person;
+		if(caller.getAttribute('id')=='person'){
+			selected.person = caller.value;
+		}
+		else if(caller.getAttribute('id')=='category'){
+			selected.category = caller.value;
+		} 
 		
 		var jsonData = JSON.stringify(selected)
 		$.ajax({
@@ -90,42 +110,14 @@
 				console.log(typeof response);
 				console.log(response);
 				
-				$("#category").find("option").remove();
-				$("#category").append("<option value='total'>category : total</option>");
+				$(callee).find("option").remove();
+				$(callee).append("<option value='total'>"+callee.getAttribute('id')+" : total</option>");
 				
 				for(i in response){
-					$("#category").append("<option value='"+response[i][1]+"'>"+response[i][1]+"</option>");
+					$(callee).append("<option value='"+response[i][1]+"'>"+response[i][1]+"</option>");
 					console.log(response[i][1]);
 				}
-				$("#category").val(category).attr("selected","selected");
-			}
-		});
-	}
-	function changePerson(person, category){
-		console.log("this is the test of new function");
-		var selected = new Object();
-		selected.category = category;
-		
-		var jsonData = JSON.stringify(selected)
-		$.ajax({
-			type : 'GET',
-			url :'/srObject/optionData',
-			contentType : 'application/json;charset=UTF-8',
-			data : {'jsonData':jsonData},
-			dataType:'json',
-			error : function(response){alert("No Data");},
-			success : function(response){
-				console.log(typeof response);
-				console.log(response);
-				
-				$("#person").find("option").remove();
-				$("#person").append("<option value='total'>person : total</option>");
-				
-				for(i in response){
-					$("#person").append("<option value='"+response[i][1]+"'>"+response[i][1]+"</option>");
-					console.log(response[i][1]);
-				}
-				$("#person").val(person).attr("selected","selected");
+				$(callee).val(preSelected).attr("selected","selected");
 			}
 		});
 	}
@@ -144,7 +136,7 @@
 										category.value,
 										service.value,
 										'chart_div'),
-							changeCategory(person.value,category.value)">
+							changeOption(person,category)">
 		<option value=total>person : total</option>
 		<%
 			for (List<Object> list : persons) {
@@ -158,7 +150,7 @@
 												category.value,
 												service.value,
 												'chart_div'),
-											changePerson(person.value,category.value)">
+											changeOption(category,person)">
 		<option value=total>category : total</option>
 		<%
 			for (List<Object> list : categories) {

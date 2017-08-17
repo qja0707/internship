@@ -14,6 +14,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import com.google.gson.Gson;
 import com.timegraph.bo.GraphPrService;
 import com.timegraph.dto.InfluxdbDTO;
 
@@ -38,11 +39,15 @@ public class HomeController {
 		
 		InfluxdbDTO pcOrMobileDatas = new InfluxdbDTO();
 		
+		Gson gson = new Gson();
+		pcOrMobileDatas.setPerson("total");
+		pcOrMobileDatas.setCategoryName("total");
 		pcOrMobileDatas.setField(pcServiceYn);
 		pcOrMobileDatas.setField2(mobileServiceYn);
 		pcOrMobileDatas = graphPrService.getDatas(pcOrMobileDatas);
 		
-		request.setAttribute("datas", pcOrMobileDatas.getDatas());
+		System.out.println(pcOrMobileDatas.getDatas());
+		request.setAttribute("datas", gson.toJson(pcOrMobileDatas.getDatas()));
 		
 		// for select box in web page
 		InfluxdbDTO persons = new InfluxdbDTO();
@@ -55,8 +60,8 @@ public class HomeController {
 
 		System.out.println(persons.getDatas());
 		JSONParser parser = new JSONParser();
-		JSONArray jsonPersons = (JSONArray) parser.parse(String.valueOf(persons.getDatas()));
-		JSONArray jsonCategories = (JSONArray) parser.parse(String.valueOf(categories.getDatas()));
+		JSONArray jsonPersons = (JSONArray) parser.parse(gson.toJson(persons.getDatas()));
+		JSONArray jsonCategories = (JSONArray) parser.parse(gson.toJson(categories.getDatas()));
 		
 		request.setAttribute("persons",jsonPersons);
 		request.setAttribute("categories",jsonCategories);
@@ -65,11 +70,11 @@ public class HomeController {
 		
 	}
 	
-	@RequestMapping(value = "/srObject/personData",method = RequestMethod.GET)
+	@RequestMapping(value = "/srObject/selectedData",method = RequestMethod.GET)		//콤보박스의 선택된 값을 받아 데이터 select
 	public String personData(HttpServletRequest request) throws Exception {
 		
 		System.out.println(request.getParameter("jsonData"));
-		
+		Gson gson = new Gson();
 		JSONParser parser = new JSONParser();
 		JSONObject jsonData = (JSONObject) parser.parse(request.getParameter("jsonData"));
 
@@ -86,18 +91,18 @@ public class HomeController {
 		
 		dto = graphPrService.getDatas(dto);
 		
-		JSONArray jsonObj = (JSONArray) parser.parse(String.valueOf(dto.getDatas()));
+		JSONArray jsonObj = (JSONArray) parser.parse(gson.toJson(dto.getDatas()));
 		System.out.println(jsonObj);
-		request.setAttribute("countedData",jsonObj);
+		request.setAttribute("selectedData",jsonObj);
 		
-		return "personData";
+		return "selectedData";
 	}
 	
-	@RequestMapping(value = "/srObject/optionData",method = RequestMethod.GET)
+	@RequestMapping(value = "/srObject/optionData",method = RequestMethod.GET)		//콤보박스의 선택된 값을 받아 해당 값에 유효한 tag value 가져옴
 	public String optionData(HttpServletRequest request) throws Exception {
 		
 		System.out.println(request.getParameter("jsonData"));
-		
+		Gson gson = new Gson();
 		JSONParser parser = new JSONParser();
 		JSONObject jsonData = (JSONObject) parser.parse(request.getParameter("jsonData"));
 
@@ -113,9 +118,9 @@ public class HomeController {
 		
 		dto = graphPrService.getTagValues(dto);
 		
-		JSONArray jsonObj = (JSONArray) parser.parse(String.valueOf(dto.getDatas()));
+		JSONArray jsonObj = (JSONArray) parser.parse(gson.toJson(dto.getDatas()));
 		System.out.println(jsonObj);
-		request.setAttribute("optionData",dto.getDatas());
+		request.setAttribute("optionData",jsonObj);
 		
 		return "optionData";
 	}

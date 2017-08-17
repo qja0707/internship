@@ -30,7 +30,7 @@ public class InfluxDBConn {
 		this.password = password;
 	}
 	
-	public void setUp() throws InterruptedException, IOException {	//copy from https://github.com/influxdata/influxdb-java
+	public void setUp() throws InterruptedException, IOException {	//copy from https://github.com/influxdata/influxdb-java		influxDB 연결
 		this.influxDB = InfluxDBFactory.connect("http:////" + ip_addr + ":" + port, user , password);
 		
 		boolean influxDBstarted = false;
@@ -53,57 +53,7 @@ public class InfluxDBConn {
 		System.out.println("#  Connected to InfluxDB Version: " + this.influxDB.version() + " #");
 	}		
 	
-	//JSON
-	public void customWrite(String measurementName, ArrayList<DatasetVO> dataArray, long unixTime) {
-		
-		BatchPoints batchPoints = BatchPoints.database(dbName).retentionPolicy("").build();
-		
-		System.out.println("Database : "+dbName);
-		System.out.println("Mesurement : "+measurementName);
-		System.out.println("dataArray size : "+dataArray.size());
-		
-		for (DatasetVO dataset : dataArray) {	
-			batchPoints.point(Point
-					.measurement(measurementName)
-					.tag("objectId", String.valueOf(dataset.getObjectId()))
-					.tag("objectName",dataset.getObjectName())
-					.tag("categoryId",String.valueOf(dataset.getCategoryId()))
-					.tag("categoryName",dataset.getCategoryName())
-					.addField("categoryType",dataset.getCategoryType())
-					.addField("pcServiceYn",dataset.getPcServiceYn())
-					.addField("mobileServiceYn",dataset.getMobileServiceYn())
-					.time(unixTime, TimeUnit.MILLISECONDS)				
-					.build());
-		}
-		this.influxDB.write(batchPoints);
-		System.out.println("Writing batchPoints is done");
-	}
-	
-	public void customWrite(String measurementName, ArrayList<DatasetVO> dataArray) {
-		
-		BatchPoints batchPoints = BatchPoints.database(dbName).retentionPolicy("").build();
-		
-		System.out.println("Database : "+dbName);
-		System.out.println("Mesurement : "+measurementName);
-		System.out.println("dataArray size : "+dataArray.size());
-		
-		for (DatasetVO dataset : dataArray) {	
-			batchPoints.point(Point
-					.measurement(measurementName)
-					.tag("objectId", String.valueOf(dataset.getObjectId()))
-					.tag("objectName",dataset.getObjectName())
-					.tag("person", dataset.getPerson())
-					.tag("categoryId",String.valueOf(dataset.getCategoryId()))
-					.tag("categoryName",dataset.getCategoryName())
-					.addField("pcServiceYn",dataset.getPcServiceYn())
-					.addField("mobileServiceYn",dataset.getMobileServiceYn())
-					.build());
-		}
-		this.influxDB.write(batchPoints);
-		System.out.println("Writing batchPoints is done");
-	}
-
-	public void customWrite(String measurementName, DatasetVO dataset) {
+	public void customWrite(String measurementName, DatasetVO dataset) {			//time = batch 가 돌아가는 시점
 		
 		BatchPoints batchPoints = BatchPoints.database(dbName).retentionPolicy("").build();
 		
@@ -120,7 +70,7 @@ public class InfluxDBConn {
 		batchPoints.point(point);
 		this.influxDB.write(batchPoints);
 	}
-	public void customWrite(String measurementName, DatasetVO dataset,long unixTime) {
+	public void customWrite(String measurementName, DatasetVO dataset,long unixTime) {		//time = 개발자가 지정
 		
 		BatchPoints batchPoints = BatchPoints.database(dbName).retentionPolicy("").build();
 		

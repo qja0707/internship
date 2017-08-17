@@ -17,6 +17,9 @@ class QueryGenerator {
 		this.dto = dto;
 	}
 	
+	public void setDTO(InfluxdbDTO dto) {
+		this.dto = dto;
+	}
 	public String getQuery() {
 		println query;
 		return query;
@@ -28,7 +31,7 @@ class QueryGenerator {
 						WHERE time<'2017-08-07'				
 				"""
 		
-		if(dto.getField()!=null&&!dto.getField().equals(none) 
+		/*if(dto.getField()!=null&&!dto.getField().equals(none) 
 		&& dto.getField2()!=null&&!dto.getField2().equals(none)) {
 			
 			query += 
@@ -36,7 +39,7 @@ class QueryGenerator {
 				AND (${dto.getField()} = 'Y' OR ${dto.getField2()} = 'Y') 
 				"""
 					
-		}else if(dto.getField()!=null&&!dto.getField().equals(none)) {
+		}else*/ if(dto.getField()!=null&&!dto.getField().equals(none)) {
 			query += 
 				"""
 				AND ${dto.getField()} = 'Y' 
