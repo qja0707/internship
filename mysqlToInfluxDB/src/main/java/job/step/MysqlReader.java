@@ -19,11 +19,11 @@ public class MysqlReader implements ItemStreamReader<DatasetVO>{
 	private final String READ = "Read----------";
 	
 	private final String URL = "capp23.ext.nhncorp.com";
-	private final String PORT = "33326";
-	private final String DATABASE = "sirius";
+	private final String PORT = "3326";
+	private final String DATABASE = "sius";
 	
-	private final String USER = "sirius";
-	private final String PASSWORD = "sirius";
+	private final String USER = "sius";
+	private final String PASSWORD = "sius";
 	
 	private final String sql = "SELECT 	A.object_id ," + 
 			"			   	A.object_name, " + 
